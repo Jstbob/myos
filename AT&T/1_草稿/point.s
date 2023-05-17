@@ -1,0 +1,8 @@
+buffer:
+.byte 0x01,0x02
+.skip 512
+.equ ADDR, .-buffer
+.byte 0xAA,0x55
+mov $1, %eax
+.long ADDR
+.byte 0x99,0x99

@@ -1,3 +1,5 @@
+#include "boot.h"
+
 /* Declare constants for the multiboot header. */
 .set ALIGN,    1<<0             /* align loaded modules on page boundaries */
 .set MEMINFO,  1<<1             /* provide memory map */
@@ -43,7 +45,7 @@ doesn't make sense to return from this function as the bootloader is gone.
 */
 .section .text
 .global _start
-.extern _kernel_main
+.global kernel_main
 _start:
 	/*
 	The bootloader has loaded us into 32-bit protected mode on a x86
@@ -86,7 +88,7 @@ _start:
 	*/
 
 	push %ebx
-	call _kernel_main
+	call kernel_main
  
 	/*
 	If the system has nothing more to do, put the computer into an

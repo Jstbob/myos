@@ -1,4 +1,3 @@
-
 qemu: kernel.img
 	qemu-system-i386 -kernel kernel.img -m 256M
 

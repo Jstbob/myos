@@ -11,7 +11,7 @@ qemu-gdb: kernel.img
 	gcc -m32 -c $< -o $@ -nostdlib -I /usr/include/x86_64-linux-gnu
 
 SRCS := $(shell find . -name "*.c" -or -name "*.s" -type f)
-OBJS := $(shell find . -name "*.o" -type f)
+OBJS := $(SRCS:%=%.o)
 
 kernel.img: $(OBJS)
 	ld -m elf_i386 -T linker.ld -o $@ $?

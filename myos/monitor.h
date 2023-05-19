@@ -1,30 +1,22 @@
-#ifndef _MONITOR_H
-#define _MONITOR_H
+// monitor.h -- Defines the interface for monitor.h
+//              From JamesM's kernel development tutorials.
 
-#include <stdint.h>
+#ifndef MONITOR_H
+#define MONITOR_H
 
-static uint16_t *const VIDEO_BASE_ADDR = (uint16_t *)0xB8000;
-static const uint16_t COLOR = 0x0F;
-static const uint16_t HIGHT = 25;
-static const uint16_t WIDE = 80;
-static const uint16_t BLANK = (COLOR << 8) | 0x20;
+#include "common.h"
 
-struct monitor {
-    uint16_t cursor_x;
-    uint16_t cursor_y;
-    uint16_t *video_memory;
-};
+// Write a single character out to the screen.
+void monitor_put(char c);
 
-void monitor_init(struct monitor *);
+// Clear the screen to all black.
+void monitor_clear();
 
-void monitor_putc(struct monitor *, char);
+// Output a null-terminated ASCII string to the monitor.
+void monitor_write(char *c);
 
-void monitor_clear(struct monitor *);
+void monitor_write_hex(u32int n);
 
-void monitor_write(struct monitor *, const char *);
+void monitor_write_dec(u32int n);
 
-static void monitor_move_cursor(struct monitor *);
-
-static void monitor_scroll(struct monitor *);
-
-#endif
+#endif // MONITOR_H

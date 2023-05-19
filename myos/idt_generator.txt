@@ -1,0 +1,288 @@
+set_idt_entry( 0, (uint32_t)isr0 , 0x08, 0x8E);
+set_idt_entry( 1, (uint32_t)isr1 , 0x08, 0x8E);
+set_idt_entry( 2, (uint32_t)isr2 , 0x08, 0x8E);
+set_idt_entry( 3, (uint32_t)isr3 , 0x08, 0x8E);
+set_idt_entry( 4, (uint32_t)isr4 , 0x08, 0x8E);
+set_idt_entry( 5, (uint32_t)isr5 , 0x08, 0x8E);
+set_idt_entry( 6, (uint32_t)isr6 , 0x08, 0x8E);
+set_idt_entry( 7, (uint32_t)isr7 , 0x08, 0x8E);
+set_idt_entry( 8, (uint32_t)isr8 , 0x08, 0x8E);
+set_idt_entry( 9, (uint32_t)isr9 , 0x08, 0x8E);
+set_idt_entry( 10, (uint32_t)isr10 , 0x08, 0x8E);
+set_idt_entry( 11, (uint32_t)isr11 , 0x08, 0x8E);
+set_idt_entry( 12, (uint32_t)isr12 , 0x08, 0x8E);
+set_idt_entry( 13, (uint32_t)isr13 , 0x08, 0x8E);
+set_idt_entry( 14, (uint32_t)isr14 , 0x08, 0x8E);
+set_idt_entry( 15, (uint32_t)isr15 , 0x08, 0x8E);
+set_idt_entry( 16, (uint32_t)isr16 , 0x08, 0x8E);
+set_idt_entry( 17, (uint32_t)isr17 , 0x08, 0x8E);
+set_idt_entry( 18, (uint32_t)isr18 , 0x08, 0x8E);
+set_idt_entry( 19, (uint32_t)isr19 , 0x08, 0x8E);
+set_idt_entry( 20, (uint32_t)isr20 , 0x08, 0x8E);
+set_idt_entry( 21, (uint32_t)isr21 , 0x08, 0x8E);
+set_idt_entry( 22, (uint32_t)isr22 , 0x08, 0x8E);
+set_idt_entry( 23, (uint32_t)isr23 , 0x08, 0x8E);
+set_idt_entry( 24, (uint32_t)isr24 , 0x08, 0x8E);
+set_idt_entry( 25, (uint32_t)isr25 , 0x08, 0x8E);
+set_idt_entry( 26, (uint32_t)isr26 , 0x08, 0x8E);
+set_idt_entry( 27, (uint32_t)isr27 , 0x08, 0x8E);
+set_idt_entry( 28, (uint32_t)isr28 , 0x08, 0x8E);
+set_idt_entry( 29, (uint32_t)isr29 , 0x08, 0x8E);
+set_idt_entry( 30, (uint32_t)isr30 , 0x08, 0x8E);
+set_idt_entry( 31, (uint32_t)isr31 , 0x08, 0x8E);
+extern void isr0();
+extern void isr1();
+extern void isr2();
+extern void isr3();
+extern void isr4();
+extern void isr5();
+extern void isr6();
+extern void isr7();
+extern void isr8();
+extern void isr9();
+extern void isr10();
+extern void isr11();
+extern void isr12();
+extern void isr13();
+extern void isr14();
+extern void isr15();
+extern void isr16();
+extern void isr17();
+extern void isr18();
+extern void isr19();
+extern void isr20();
+extern void isr21();
+extern void isr22();
+extern void isr23();
+extern void isr24();
+extern void isr25();
+extern void isr26();
+extern void isr27();
+extern void isr28();
+extern void isr29();
+extern void isr30();
+extern void isr31();
+.global isr0
+.global isr1
+.global isr2
+.global isr3
+.global isr4
+.global isr5
+.global isr6
+.global isr7
+.global isr8
+.global isr9
+.global isr10
+.global isr11
+.global isr12
+.global isr13
+.global isr14
+.global isr15
+.global isr16
+.global isr17
+.global isr18
+.global isr19
+.global isr20
+.global isr21
+.global isr22
+.global isr23
+.global isr24
+.global isr25
+.global isr26
+.global isr27
+.global isr28
+.global isr29
+.global isr30
+.global isr31
+isr0:
+    cli
+    push $0
+    jmp handler 
+
+isr1:
+    cli
+    push $1
+    jmp handler 
+
+isr2:
+    cli
+    push $2
+    jmp handler 
+
+isr3:
+    cli
+    push $3
+    jmp handler 
+
+isr4:
+    cli
+    push $4
+    jmp handler 
+
+isr5:
+    cli
+    push $5
+    jmp handler 
+
+isr6:
+    cli
+    push $6
+    jmp handler 
+
+isr7:
+    cli
+    push $7
+    jmp handler 
+
+isr8:
+    cli
+    push $8
+    jmp handler 
+
+isr9:
+    cli
+    push $9
+    jmp handler 
+
+isr10:
+    cli
+    push $10
+    jmp handler 
+
+isr11:
+    cli
+    push $11
+    jmp handler 
+
+isr12:
+    cli
+    push $12
+    jmp handler 
+
+isr13:
+    cli
+    push $13
+    jmp handler 
+
+isr14:
+    cli
+    push $14
+    jmp handler 
+
+isr15:
+    cli
+    push $15
+    jmp handler 
+
+isr16:
+    cli
+    push $16
+    jmp handler 
+
+isr17:
+    cli
+    push $17
+    jmp handler 
+
+isr18:
+    cli
+    push $18
+    jmp handler 
+
+isr19:
+    cli
+    push $19
+    jmp handler 
+
+isr20:
+    cli
+    push $20
+    jmp handler 
+
+isr21:
+    cli
+    push $21
+    jmp handler 
+
+isr22:
+    cli
+    push $22
+    jmp handler 
+
+isr23:
+    cli
+    push $23
+    jmp handler 
+
+isr24:
+    cli
+    push $24
+    jmp handler 
+
+isr25:
+    cli
+    push $25
+    jmp handler 
+
+isr26:
+    cli
+    push $26
+    jmp handler 
+
+isr27:
+    cli
+    push $27
+    jmp handler 
+
+isr28:
+    cli
+    push $28
+    jmp handler 
+
+isr29:
+    cli
+    push $29
+    jmp handler 
+
+isr30:
+    cli
+    push $30
+    jmp handler 
+
+isr31:
+    cli
+    push $31
+    jmp handler 
+
+asm volatile("int $0");
+asm volatile("int $1");
+asm volatile("int $2");
+asm volatile("int $3");
+asm volatile("int $4");
+asm volatile("int $5");
+asm volatile("int $6");
+asm volatile("int $7");
+asm volatile("int $8");
+asm volatile("int $9");
+asm volatile("int $10");
+asm volatile("int $11");
+asm volatile("int $12");
+asm volatile("int $13");
+asm volatile("int $14");
+asm volatile("int $15");
+asm volatile("int $16");
+asm volatile("int $17");
+asm volatile("int $18");
+asm volatile("int $19");
+asm volatile("int $20");
+asm volatile("int $21");
+asm volatile("int $22");
+asm volatile("int $23");
+asm volatile("int $24");
+asm volatile("int $25");
+asm volatile("int $26");
+asm volatile("int $27");
+asm volatile("int $28");
+asm volatile("int $29");
+asm volatile("int $30");
+asm volatile("int $31");

@@ -1,37 +1,9 @@
-#ifndef _DESCRIPTOR_TABLES_H
-#define _DESCRIPTOR_TABLES_H
+#ifndef _IDT_H
+#define _IDT_H
 
 #include <stdint.h>
-
-// GDT Entry struct
-struct gdt_entry_t {
-    uint8_t base_high;
-    uint8_t granularity; // limit_seg high
-    uint8_t access;
-    uint8_t base_middle;
-    uint16_t base_low;
-    uint16_t limit_low;
-};
-
-struct gdt_ptr_t {
-    uint16_t limit; // base + limit 指向 GDT 的最后一个条目
-    uint32_t base;  // 指向 GDT
-};
-
-struct idt_entry_t {
-    uint16_t base_lo;
-    uint16_t sel;
-    uint8_t always0;
-    uint8_t flags;
-    uint16_t base_hi;
-};
-
-struct idt_ptr_t {
-    uint16_t limit;
-    uint32_t base;
-};
-
-extern void gdt_flush(uint32_t);
+void init_idt();
+extern void idt_flush(uint32_t);
 
 extern void isr0();
 extern void isr1();
@@ -65,5 +37,7 @@ extern void isr28();
 extern void isr29();
 extern void isr30();
 extern void isr31();
+
+void exception_handler(uint32_t err_no);
 
 #endif

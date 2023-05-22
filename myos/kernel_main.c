@@ -5,6 +5,7 @@
 #include "gdt.h"
 #include "idt.h"
 #include "monitor.h"
+#include "paging.h"
 #include <stdint.h>
 
 typedef struct multiboot_info {
@@ -34,12 +35,12 @@ typedef struct multiboot_info {
     uint32_t vbe_interface_len;
 } multiboot_info_t;
 
-int kernel_main(struct multiboot_info *mboot_ptr) {
-    init_gdt();
-    init_idt();
-
+void test_interrupt() {
     monitor_clear();
     monitor_write("Hello, world!\n");
+    init_gdt();
+    init_idt();
+    asm volatile("sti");
 
     asm volatile("int $0");
     asm volatile("int $1");
@@ -73,5 +74,25 @@ int kernel_main(struct multiboot_info *mboot_ptr) {
     asm volatile("int $29");
     asm volatile("int $30");
     asm volatile("int $31");
-    return 0;
+}
+
+void test_timer() {
+    monitor_clear();
+    monitor_write("Hello, world!\n");
+    init_gdt();
+    init_idt();
+    asm volatile("sti");
+    init_timer(50);
+}
+
+void kernel_main(struct multiboot_info *mboot_ptr) {
+    monitor_clear();
+    monitor_write("Hello, world!\n");
+    init_gdt();
+    init_idt();
+    init_paging();
+    asm volatile("sti");
+    uint32_t ptr = 0x80000000;
+    uint32_t *n = (uint32_t *)ptr;
+    monitor_write_dec(*n);
 }

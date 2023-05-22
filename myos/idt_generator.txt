@@ -286,3 +286,131 @@ asm volatile("int $28");
 asm volatile("int $29");
 asm volatile("int $30");
 asm volatile("int $31");
+set_idt_entry(32, (uint32_t)irq0, 0x08, 0x8E);
+set_idt_entry(33, (uint32_t)irq1, 0x08, 0x8E);
+set_idt_entry(34, (uint32_t)irq2, 0x08, 0x8E);
+set_idt_entry(35, (uint32_t)irq3, 0x08, 0x8E);
+set_idt_entry(36, (uint32_t)irq4, 0x08, 0x8E);
+set_idt_entry(37, (uint32_t)irq5, 0x08, 0x8E);
+set_idt_entry(38, (uint32_t)irq6, 0x08, 0x8E);
+set_idt_entry(39, (uint32_t)irq7, 0x08, 0x8E);
+set_idt_entry(40, (uint32_t)irq8, 0x08, 0x8E);
+set_idt_entry(41, (uint32_t)irq9, 0x08, 0x8E);
+set_idt_entry(42, (uint32_t)irq10, 0x08, 0x8E);
+set_idt_entry(43, (uint32_t)irq11, 0x08, 0x8E);
+set_idt_entry(44, (uint32_t)irq12, 0x08, 0x8E);
+set_idt_entry(45, (uint32_t)irq13, 0x08, 0x8E);
+set_idt_entry(46, (uint32_t)irq14, 0x08, 0x8E);
+set_idt_entry(47, (uint32_t)irq15, 0x08, 0x8E);
+extern void irq0();
+extern void irq1();
+extern void irq2();
+extern void irq3();
+extern void irq4();
+extern void irq5();
+extern void irq6();
+extern void irq7();
+extern void irq8();
+extern void irq9();
+extern void irq10();
+extern void irq11();
+extern void irq12();
+extern void irq13();
+extern void irq14();
+extern void irq15();
+irq0:
+    cli
+    push $32
+    jmp irq_handler
+        
+irq1:
+    cli
+    push $33
+    jmp irq_handler
+        
+irq2:
+    cli
+    push $34
+    jmp irq_handler
+        
+irq3:
+    cli
+    push $35
+    jmp irq_handler
+        
+irq4:
+    cli
+    push $36
+    jmp irq_handler
+        
+irq5:
+    cli
+    push $37
+    jmp irq_handler
+        
+irq6:
+    cli
+    push $38
+    jmp irq_handler
+        
+irq7:
+    cli
+    push $39
+    jmp irq_handler
+        
+irq8:
+    cli
+    push $40
+    jmp irq_handler
+        
+irq9:
+    cli
+    push $41
+    jmp irq_handler
+        
+irq10:
+    cli
+    push $42
+    jmp irq_handler
+        
+irq11:
+    cli
+    push $43
+    jmp irq_handler
+        
+irq12:
+    cli
+    push $44
+    jmp irq_handler
+        
+irq13:
+    cli
+    push $45
+    jmp irq_handler
+        
+irq14:
+    cli
+    push $46
+    jmp irq_handler
+        
+irq15:
+    cli
+    push $47
+    jmp irq_handler
+        
+.global irq0
+.global irq1
+.global irq2
+.global irq3
+.global irq4
+.global irq5
+.global irq6
+.global irq7
+.global irq8
+.global irq9
+.global irq10
+.global irq11
+.global irq12
+.global irq13
+.global irq14
+.global irq15

@@ -34,6 +34,22 @@
 .global isr29
 .global isr30
 .global isr31
+.global irq0
+.global irq1
+.global irq2
+.global irq3
+.global irq4
+.global irq5
+.global irq6
+.global irq7
+.global irq8
+.global irq9
+.global irq10
+.global irq11
+.global irq12
+.global irq13
+.global irq14
+.global irq15
 idt_flush:
     mov 4(%esp), %eax
     lidt (%eax)
@@ -200,6 +216,92 @@ isr31:
 
 handler:
     call exception_handler
+    add $4, %esp
+    sti
+    iret
+        
+irq0:
+    cli
+    push $32
+    jmp irq_handler
+        
+irq1:
+    cli
+    push $33
+    jmp irq_handler
+        
+irq2:
+    cli
+    push $34
+    jmp irq_handler
+        
+irq3:
+    cli
+    push $35
+    jmp irq_handler
+        
+irq4:
+    cli
+    push $36
+    jmp irq_handler
+        
+irq5:
+    cli
+    push $37
+    jmp irq_handler
+        
+irq6:
+    cli
+    push $38
+    jmp irq_handler
+        
+irq7:
+    cli
+    push $39
+    jmp irq_handler
+        
+irq8:
+    cli
+    push $40
+    jmp irq_handler
+        
+irq9:
+    cli
+    push $41
+    jmp irq_handler
+        
+irq10:
+    cli
+    push $42
+    jmp irq_handler
+        
+irq11:
+    cli
+    push $43
+    jmp irq_handler
+        
+irq12:
+    cli
+    push $44
+    jmp irq_handler
+        
+irq13:
+    cli
+    push $45
+    jmp irq_handler
+        
+irq14:
+    cli
+    push $46
+    jmp irq_handler
+        
+irq15:
+    cli
+    push $47
+    jmp irq_handler
+
+irq_handler:
+    call irq_handler_c
     add $4, %esp
     sti
     iret

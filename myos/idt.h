@@ -2,6 +2,7 @@
 #define _IDT_H
 
 #include <stdint.h>
+
 void init_idt();
 extern void idt_flush(uint32_t);
 
@@ -39,5 +40,30 @@ extern void isr30();
 extern void isr31();
 
 void exception_handler(uint32_t err_no);
+
+void remap_irq_table();
+
+extern void irq0();
+extern void irq1();
+extern void irq2();
+extern void irq3();
+extern void irq4();
+extern void irq5();
+extern void irq6();
+extern void irq7();
+extern void irq8();
+extern void irq9();
+extern void irq10();
+extern void irq11();
+extern void irq12();
+extern void irq13();
+extern void irq14();
+extern void irq15();
+
+void irq_handler_c(uint32_t err_no);
+
+void call_timer_back();
+
+void init_timer(uint32_t frequency);
 
 #endif

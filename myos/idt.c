@@ -2,7 +2,6 @@
 #include "monitor.h"
 #include <stdint.h>
 
-
 struct idt_entry {
     uint16_t base_lo;
     uint16_t sel;
@@ -67,6 +66,8 @@ void init_idt() {
     set_idt_entry(30, (uint32_t)isr30, 0x08, 0x8E);
     set_idt_entry(31, (uint32_t)isr31, 0x08, 0x8E);
 
+    remap_irq_table();
+
     idt_flush((uint32_t)&idt);
 }
 
@@ -74,4 +75,70 @@ void exception_handler(uint32_t err_no) {
     monitor_write("int: ");
     monitor_write_hex(err_no);
     monitor_put('\n');
+}
+
+void remap_irq_table() {
+    outb(0x20, 0x11);
+    outb(0xA0, 0x11);
+    outb(0x21, 0x20);
+    outb(0xA1, 0x28);
+    outb(0x21, 0x04);
+    outb(0xA1, 0x02);
+    outb(0x21, 0x01);
+    outb(0xA1, 0x01);
+    outb(0x21, 0x0);
+    outb(0xA1, 0x0);
+
+    set_idt_entry(32, (uint32_t)irq0, 0x08, 0x8E);
+    set_idt_entry(33, (uint32_t)irq1, 0x08, 0x8E);
+    set_idt_entry(34, (uint32_t)irq2, 0x08, 0x8E);
+    set_idt_entry(35, (uint32_t)irq3, 0x08, 0x8E);
+    set_idt_entry(36, (uint32_t)irq4, 0x08, 0x8E);
+    set_idt_entry(37, (uint32_t)irq5, 0x08, 0x8E);
+    set_idt_entry(38, (uint32_t)irq6, 0x08, 0x8E);
+    set_idt_entry(39, (uint32_t)irq7, 0x08, 0x8E);
+    set_idt_entry(40, (uint32_t)irq8, 0x08, 0x8E);
+    set_idt_entry(41, (uint32_t)irq9, 0x08, 0x8E);
+    set_idt_entry(42, (uint32_t)irq10, 0x08, 0x8E);
+    set_idt_entry(43, (uint32_t)irq11, 0x08, 0x8E);
+    set_idt_entry(44, (uint32_t)irq12, 0x08, 0x8E);
+    set_idt_entry(45, (uint32_t)irq13, 0x08, 0x8E);
+    set_idt_entry(46, (uint32_t)irq14, 0x08, 0x8E);
+    set_idt_entry(47, (uint32_t)irq15, 0x08, 0x8E);
+}
+
+void irq_handler_c(uint32_t err_no) {
+    if (err_no >= 40) {
+        // Send reset signal to slave.
+        outb(0xA0, 0x20);
+    }
+    // Send reset signal to master. (As well as slave, if necessary).
+    outb(0x20, 0x20);
+
+    if (err_no == 32) {
+        call_timer_back();
+    }
+}
+
+uint32_t tick = 0;
+void call_timer_back() {
+    tick++;
+    monitor_write("Tick: ");
+    monitor_write_dec(tick);
+    monitor_write("\n");
+}
+
+void init_timer(uint32_t frequency) {
+
+    uint32_t divisor = 1193180 / frequency;
+
+    outb(0x43, 0x36);
+
+    // Divisor has to be sent byte-wise, so split here into upper/lower bytes.
+    uint8_t l = (uint8_t)(divisor & 0xFF);
+    uint8_t h = (uint8_t)((divisor >> 8) & 0xFF);
+
+    // Send the frequency divisor.
+    outb(0x40, l);
+    outb(0x40, h);
 }

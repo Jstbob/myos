@@ -1,8 +1,8 @@
 qemu: kernel.img
-	qemu-system-i386 -kernel kernel.img -m 256M
+	qemu-system-i386 -kernel kernel.img -m 128M
 
 qemu-gdb: kernel.img
-	qemu-system-i386 -kernel kernel.img -m 256M -s -S -serial stdio
+	qemu-system-i386 -kernel kernel.img -m 128M -s -S -serial stdio
 
 %.s.o: %.s
 	as --32 $< -o $@

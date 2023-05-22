@@ -1,6 +1,7 @@
 *.vscode
 *.img
 *.i64
+*.lnk
 
 # Prerequisites
 *.d

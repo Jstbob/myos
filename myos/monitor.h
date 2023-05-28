@@ -1,22 +1,14 @@
-// monitor.h -- Defines the interface for monitor.h
-//              From JamesM's kernel development tutorials.
+#ifndef _MONITOR_H
+#define _MONITOR_H
 
-#ifndef MONITOR_H
-#define MONITOR_H
+#include <stdint.h>
 
-#include "common.h"
+void init_monitor(); // 清屏
 
-// Write a single character out to the screen.
-void monitor_put(char c);
+void monitor_write_char(char c);
+void move_cursor(uint16_t x, uint16_t y);
+void enter_new_line();
+void monitor_write_msg(const char *str);
+void monitor_write_hex(char *p, uint32_t length);
 
-// Clear the screen to all black.
-void monitor_clear();
-
-// Output a null-terminated ASCII string to the monitor.
-void monitor_write(char *c);
-
-void monitor_write_hex(uint32_t n);
-
-void monitor_write_dec(uint32_t n);
-
-#endif // MONITOR_H
+#endif

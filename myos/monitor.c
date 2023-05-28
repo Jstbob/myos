@@ -1,183 +1,135 @@
-// monitor.c -- Defines functions for writing to the monitor.
-//             heavily based on Bran's kernel development tutorials,
-//             but rewritten for JamesM's kernel tutorials.
-
 #include "monitor.h"
+#include "common.h"
+#include <stdint.h>
 
-// The VGA framebuffer starts at 0xB8000.
-uint16_t *video_memory = (uint16_t *)0xB8000;
-// Stores the cursor position.
-uint8_t cursor_x = 0;
-uint8_t cursor_y = 0;
+/* 屏幕黑白模式下，缓冲区由 80x25 个 chat16组成;
+ *
+ * 每个chat16的位属性:
+ *  |15 - - - - - - - 12|11 - - - - - - - 8|7 - - - - - - 0|
+ *  |Background colour  |Foreground colour |Character code |
+ *
+ * 其中，15-12位：背景色，11-8位：前景色，7-0位：ASCII码；
+ *
+ * 缓冲区起始地址 0xB8000；
+ */
 
-// Updates the hardware cursor.
-static void move_cursor() {
-    // The screen is 80 characters wide...
-    uint16_t cursorLocation = cursor_y * 80 + cursor_x;
-    outb(0x3D4, 14); // Tell the VGA board we are setting the high cursor byte.
-    outb(0x3D5, cursorLocation >> 8); // Send the high cursor byte.
-    outb(0x3D4, 15); // Tell the VGA board we are setting the low cursor byte.
-    outb(0x3D5, cursorLocation); // Send the low cursor byte.
-}
+#define SPACE_CHAR 0x20        // 清除为空格字符
+#define BACK_COLOR 0x0F        // 黑底白字
+#define MONITOR_BUFFER 0xB8000 // 缓冲区起始地址
+#define BUFFER_WIDTH 80        // 缓冲区宽度
+#define BUFFER_HIGHT 25        // 缓冲区高度
 
-// Scrolls the text on the screen up by one line.
-static void scroll() {
+static uint16_t *monitor_buffer = (uint16_t *)MONITOR_BUFFER;
+static uint16_t cursor_x = 0;
+static uint16_t cursor_y = 0;
 
-    // Get a space character with the default colour attributes.
-    uint8_t attributeByte = (0 /*black*/ << 4) | (15 /*white*/ & 0x0F);
-    uint16_t blank = 0x20 /* space */ | (attributeByte << 8);
+static uint16_t convert_index(uint16_t x, uint16_t y);
+static void scroll(uint16_t raws);
+static uint16_t to_char16(char c);
 
-    // Row 25 is the end, this means we need to scroll up
-    if (cursor_y >= 25) {
-        // Move the current text chunk that makes up the screen
-        // back in the buffer by a line
-        int i;
-        for (i = 0 * 80; i < 24 * 80; i++) {
-            video_memory[i] = video_memory[i + 80];
-        }
-
-        // The last line should now be blank. Do this by writing
-        // 80 spaces to it.
-        for (i = 24 * 80; i < 25 * 80; i++) {
-            video_memory[i] = blank;
-        }
-        // The cursor should now be on the last line.
-        cursor_y = 24;
-    }
-}
-
-// Writes a single character out to the screen.
-void monitor_put(char c) {
-    // The background colour is black (0), the foreground is white (15).
-    uint8_t backColour = 0;
-    uint8_t foreColour = 15;
-
-    // The attribute byte is made up of two nibbles - the lower being the
-    // foreground colour, and the upper the background colour.
-    uint8_t attributeByte = (backColour << 4) | (foreColour & 0x0F);
-    // The attribute byte is the top 8 bits of the word we have to send to the
-    // VGA board.
-    uint16_t attribute = attributeByte << 8;
-    uint16_t *location;
-
-    // Handle a backspace, by moving the cursor back one space
-    if (c == 0x08 && cursor_x) {
-        cursor_x--;
-    }
-
-    // Handle a tab by increasing the cursor's X, but only to a point
-    // where it is divisible by 8.
-    else if (c == 0x09) {
-        cursor_x = (cursor_x + 8) & ~(8 - 1);
-    }
-
-    // Handle carriage return
-    else if (c == '\r') {
-        cursor_x = 0;
-    }
-
-    // Handle newline by moving cursor back to left and increasing the row
-    else if (c == '\n') {
-        cursor_x = 0;
-        cursor_y++;
-    }
-    // Handle any other printable character.
-    else if (c >= ' ') {
-        location = video_memory + (cursor_y * 80 + cursor_x);
-        *location = c | attribute;
-        cursor_x++;
-    }
-
-    // Check if we need to insert a new line because we have reached the end
-    // of the screen.
-    if (cursor_x >= 80) {
-        cursor_x = 0;
-        cursor_y++;
-    }
-
-    // Scroll the screen if needed.
-    scroll();
-    // Move the hardware cursor.
-    move_cursor();
-}
-
-// Clears the screen, by copying lots of spaces to the framebuffer.
-void monitor_clear() {
-    // Make an attribute byte for the default colours
-    uint8_t attributeByte = (0 /*black*/ << 4) | (15 /*white*/ & 0x0F);
-    uint16_t blank = 0x20 /* space */ | (attributeByte << 8);
-
-    int i;
-    for (i = 0; i < 80 * 25; i++) {
-        video_memory[i] = blank;
-    }
-
-    // Move the hardware cursor back to the start.
-    cursor_x = 0;
-    cursor_y = 0;
-    move_cursor();
-}
-
-void monitor_write(char *c) {
-    int i = 0;
-    while (c[i]) {
-        monitor_put(c[i++]);
-    }
-}
-
-void monitor_write_hex(uint32_t n) {
-    uint32_t tmp;
-
-    monitor_write("0x");
-
-    char noZeroes = 1;
-
-    int i;
-    for (i = 28; i > 0; i -= 4) {
-        tmp = (n >> i) & 0xF;
-        if (tmp == 0 && noZeroes != 0) {
-            continue;
-        }
-
-        if (tmp >= 0xA) {
-            noZeroes = 0;
-            monitor_put(tmp - 0xA + 'a');
-        } else {
-            noZeroes = 0;
-            monitor_put(tmp + '0');
+/**
+ * @brief 将屏幕清除为空格
+ */
+void init_monitor() {
+    for (uint16_t i = 0; i < BUFFER_HIGHT; ++i) {
+        for (uint16_t j = 0; j < BUFFER_WIDTH; ++j) { // 先遍历行可以提高性能
+            uint16_t index = convert_index(j, i);
+            monitor_buffer[index] = to_char16(SPACE_CHAR);
         }
     }
+    move_cursor(0, 0);
+}
 
-    tmp = n & 0xF;
-    if (tmp >= 0xA) {
-        monitor_put(tmp - 0xA + 'a');
+void monitor_write_char(char c) {
+    if (c == '\n') {
+        enter_new_line();
     } else {
-        monitor_put(tmp + '0');
+        if (cursor_x >= BUFFER_WIDTH - 1) { // 超过宽度，先换行再写入字符
+            enter_new_line(); // 换行会导致当前游标 x,y 变化
+        }
+        uint16_t index = convert_index(cursor_x, cursor_y);
+        monitor_buffer[index] = to_char16(c);
+        ++cursor_x;
+        move_cursor(cursor_x, cursor_y);
     }
 }
 
-void monitor_write_dec(uint32_t n) {
+void move_cursor(uint16_t x, uint16_t y) {
+    uint16_t index = convert_index(x, y);
+    outb(0x3D4, 14);
+    outb(0x3D5, index >> 8);
+    outb(0x3D4, 15);
+    outb(0x3D5, index & 0x00ff);
+    cursor_x = x;
+    cursor_y = y;
+}
 
-    if (n == 0) {
-        monitor_put('0');
-        return;
-    }
+static uint16_t convert_index(uint16_t x, uint16_t y) {
+    uint16_t index = y * BUFFER_WIDTH + x;
+    return index;
+}
 
-    uint32_t acc = n;
-    char c[32];
-    int i = 0;
-    while (acc > 0) {
-        c[i] = '0' + acc % 10;
-        acc /= 10;
-        i++;
+void enter_new_line() { // 换行
+    ++cursor_y;
+    cursor_x = 0;
+    if (cursor_y >= BUFFER_HIGHT) {
+        scroll(1);
+    } else {
+        move_cursor(cursor_x, cursor_y);
     }
-    c[i] = 0;
+}
 
-    char c2[32];
-    c2[i--] = 0;
-    int j = 0;
-    while (i >= 0) {
-        c2[i--] = c[j++];
+static void scroll(uint16_t raws) {
+    cursor_y -= raws;
+    for (uint16_t i = BUFFER_WIDTH; i < BUFFER_HIGHT * BUFFER_WIDTH; ++i) {
+        monitor_buffer[i - BUFFER_WIDTH] = monitor_buffer[i];
     }
-    monitor_write(c2);
+    for (uint16_t i = cursor_y * BUFFER_WIDTH; i < BUFFER_HIGHT * BUFFER_WIDTH;
+         ++i) {
+        monitor_buffer[i] = to_char16(SPACE_CHAR);
+    }
+    move_cursor(cursor_x, cursor_y);
+}
+
+static uint16_t to_char16(char c) {
+    uint16_t c_char16 = (BACK_COLOR << 8) | c;
+    return c_char16;
+}
+
+void monitor_write_msg(const char *str) {
+    for (const char *ptr = str; (*ptr) != '\0'; ++ptr) {
+        monitor_write_char(*ptr);
+    }
+}
+
+static char numb2char_16(char numb);
+
+// 反向打印16进制
+void monitor_write_hex(char *p, uint32_t length) {
+    char c;
+    monitor_write_char('0');
+    monitor_write_char('x');
+    for (int i = length - 1; i >= 0; --i) {
+        if (*(p + i) == 0)
+            continue;
+
+        char hex16_hight = (*(p + i) >> 4) & 0x0F; // 获取高4位的数值
+        c = numb2char_16(hex16_hight);
+        monitor_write_char(c);
+
+        char hex16_low = *(p + i) & 0x0F;
+        c = numb2char_16(hex16_low);
+        monitor_write_char(c);
+    }
+}
+
+// 将数字映射成16进制的字符
+static char numb2char_16(char numb) {
+    char c;
+    if (numb <= 9) {
+        c = numb + 0x30;
+    } else {
+        c = numb - 0x0A + 0x61;
+    }
+    return c;
 }

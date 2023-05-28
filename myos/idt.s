@@ -1,7 +1,8 @@
-#include "idt.h"
+#include "descriptor_tables.h"
 
 .section .text
-.global idt_flush
+.extern idt_tables
+.global isr_common_stub
 .global isr0
 .global isr1
 .global isr2
@@ -50,258 +51,267 @@
 .global irq13
 .global irq14
 .global irq15
-idt_flush:
-    mov 4(%esp), %eax
-    lidt (%eax)
-    ret
 isr0:
     cli
     push $0
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr1:
     cli
     push $1
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr2:
     cli
     push $2
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr3:
     cli
     push $3
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr4:
     cli
     push $4
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr5:
     cli
     push $5
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr6:
     cli
     push $6
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr7:
     cli
     push $7
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr8:
     cli
     push $8
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr9:
     cli
     push $9
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr10:
     cli
     push $10
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr11:
     cli
     push $11
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr12:
     cli
     push $12
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr13:
     cli
     push $13
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr14:
     cli
     push $14
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr15:
     cli
     push $15
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr16:
     cli
     push $16
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr17:
     cli
     push $17
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr18:
     cli
     push $18
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr19:
     cli
     push $19
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr20:
     cli
     push $20
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr21:
     cli
     push $21
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr22:
     cli
     push $22
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr23:
     cli
     push $23
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr24:
     cli
     push $24
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr25:
     cli
     push $25
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr26:
     cli
     push $26
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr27:
     cli
     push $27
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr28:
     cli
     push $28
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr29:
     cli
     push $29
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr30:
     cli
     push $30
-    jmp handler 
-
+    jmp isr_common_stub
+            
 isr31:
     cli
     push $31
-    jmp handler
+    jmp isr_common_stub
 
-handler:
-    call exception_handler
+isr_common_stub:
+    pusha
+    
+    mov %ds, %ax
+    push %eax
+
+    mov $0x10, %ax
+    mov %ax, %ds
+    mov %ax, %es
+    mov %ax, %fs
+    mov %ax, %gs
+    
+    call idt_disatch
+
+    pop %eax
+    mov %ax, %ds
+    mov %ax, %es
+    mov %ax, %fs
+    mov %ax, %gs
+
+    popa
     add $4, %esp
     sti
     iret
-        
+
 irq0:
     cli
     push $32
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq1:
     cli
     push $33
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq2:
     cli
     push $34
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq3:
     cli
     push $35
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq4:
     cli
     push $36
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq5:
     cli
     push $37
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq6:
     cli
     push $38
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq7:
     cli
     push $39
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq8:
     cli
     push $40
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq9:
     cli
     push $41
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq10:
     cli
     push $42
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq11:
     cli
     push $43
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq12:
     cli
     push $44
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq13:
     cli
     push $45
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq14:
     cli
     push $46
-    jmp irq_handler
-        
+    jmp isr_common_stub
+            
 irq15:
     cli
     push $47
-    jmp irq_handler
-
-irq_handler:
-    call irq_handler_c
-    add $4, %esp
-    sti
-    iret
+    jmp isr_common_stub

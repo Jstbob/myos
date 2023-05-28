@@ -1,9 +1,7 @@
-// common.c -- Defines some global functions.
-//             From JamesM's kernel development tutorials.
-
 #include "common.h"
+#include "monitor.h"
+#include <stdint.h>
 
-// Write a byte out to the specified port.
 void outb(uint16_t port, uint8_t value) {
     asm volatile("outb %1, %0" : : "dN"(port), "a"(value));
 }
@@ -20,30 +18,18 @@ uint16_t inw(uint16_t port) {
     return ret;
 }
 
-// Copy len bytes from src to dest.
-void memcpy(uint8_t *dest, const uint8_t *src, uint32_t len) {
-    // TODO: implement this yourself!
-}
+void panic(const char *message, const char *file, uint32_t line) {
+    // We encountered a massive problem and have to stop.
+    asm volatile("cli"); // Disable interrupts.
 
-// Write len copies of val into dest.
-void memset(uint8_t *dest, uint8_t val, uint32_t len) {
-    // TODO: implement this yourself!
-}
-
-// Compare two strings. Should return -1 if
-// str1 < str2, 0 if they are equal or 1 otherwise.
-int strcmp(char *str1, char *str2) {
-    // TODO: implement this yourself!
-}
-
-// Copy the NULL-terminated string src into dest, and
-// return dest.
-char *strcpy(char *dest, const char *src) {
-    // TODO: implement this yourself!
-}
-
-// Concatenate the NULL-terminated string src onto
-// the end of dest, and return dest.
-char *strcat(char *dest, const char *src) {
-    // TODO: implement this yourself!
+    monitor_write_msg("PANIC(");
+    monitor_write_msg(message);
+    monitor_write_msg(") at ");
+    monitor_write_msg(file);
+    monitor_write_msg(":");
+    monitor_write_hex((char *)&line, sizeof(line));
+    monitor_write_msg("\n");
+    // Halt by going into an infinite loop.
+    for (;;)
+        ;
 }

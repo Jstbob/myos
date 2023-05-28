@@ -1,64 +1,45 @@
 #include "paging.h"
 #include <stdint.h>
 
-union page_t {
-    struct {
-        uint32_t present : 1;
-        uint32_t rw : 1;
-        uint32_t user : 1;
-        uint32_t accessed : 1;
-        uint32_t dirty : 1;
-        uint32_t unused : 7;
-        uint32_t frame : 20;
-    };
-    uint32_t total;
-};
+/*
+ * 分页属性描述符
+ * |31 - - - - - 12|11 - 9|8 - 7|6|5|4 - 3| 2 | 1 |0|
+ * |physical offset| AVAIL| RSVD|D|A|RSVD |U/S|R/W|P|
+ * 开启分页的步骤：
+ *      1. 设置好二级分页目录；
+ *      2. 设置 CR3 为 PD 指针；
+ *      3. 设置 CR0 的 PG 位；| 0x80000000
+ * Page faults, cpu 会设置 CR2 寄存器；
+ * P: 页面是否存在，1：存在，0：不存在
+ * R/W：页面是否可写，1：可写，0：不可写
+ * U/S：内存访问在什么模式下，1：用户模式，0：内核模式；
+ * Reserverd: CPU 保留，不使用
+ * A：如果内页有权限访问，由 CPU 设置
+ * D：如果内存已经被写入，由 CPU 设置
+ * AVAIL：这3位是被保留，供内核下使用
+ * Page frame address: 映射物理块的高20位，低12位固定表示4KB，不用表示
+ * Ref from: http://www.jamesmolloy.co.uk/tutorial_html/6.-Paging.html
+ */
 
-struct page_table_t {
-    union page_t entries[1024];
-};
+/* 思路：
+ *  1. 获取物理内存的可用大小；
+ *      bios 中断获取内存大小 - 内核尾指针
+ *  2. 内核尾指针位置，就是物理内存分页的起始位置；（p, size）；
+ *  3. 从起始位置进行4KB分页；
+ *  4. 记录到内存二级目录中；
+ *
+ *  0 - kernel_end -> readonly page
+ *  kernel_end - memory_max -> write and read page
+ *
+ *  内存布局：
+ *  |   固定区      |
+ *  |   内核代码区  |
+ *  |   内核堆区    |
+ *  |   用户代码区  |   使用 BIOS 中断获取总内存大小/2
+ *  |   用户栈区    |
+ *  |   内存虚拟硬盘 |  16MB
+ */
 
-struct page_directory_t {
-    struct page_table_t *tables[1024];
-};
+void init_paging(){
 
-uint32_t present_index = 0;
-struct page_directory_t page_directory;
-
-extern uint32_t end;
-uint32_t place_addr;
-
-uint32_t kmalloc(uint32_t size) {
-    uint32_t alloc_addr = place_addr;
-    place_addr += size;
-    return alloc_addr;
-}
-
-uint32_t const MEMORY_CAP = 128 * 1024 * 1024;  // 128MB
-uint32_t const PAGE_PER = 4 * 1024;
-
-void init_paging() {
-    place_addr = end;
-    uint32_t index = 0;
-    for (uint32_t i = 0; i < 1024; ++i) {
-        struct page_table_t *page_table
-            = (struct page_table_t *)kmalloc(sizeof(*page_table));
-        for (uint32_t j = 0; j < 1024; ++j) {
-            union page_t page;
-            if (index > MEMORY_CAP / PAGE_PER) {
-                page.total = ((index * PAGE_PER) << 12) | 0x7;
-            } else {
-                page.total = ((index * PAGE_PER) << 12) | 0x6;
-            }
-            page_table->entries[j] = page;
-            ++index;
-        }
-        page_directory.tables[i] = page_table;
-    }
-
-    asm volatile("mov %0, %%cr3" ::"r"(&page_directory));
-    uint32_t cr0;
-    asm volatile("mov %%cr0, %0" : "=r"(cr0));
-    cr0 |= 0x80000000; // Enable paging!
-    asm volatile("mov %0, %%cr0" ::"r"(cr0));
 }

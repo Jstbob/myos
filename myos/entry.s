@@ -1,3 +1,5 @@
+# 根据grub多引导标准，加载操作系统内核
+
 /* Declare constants for the multiboot header. */
 .set ALIGN,    1<<0             /* align loaded modules on page boundaries */
 .set MEMINFO,  1<<1             /* provide memory map */
@@ -43,7 +45,7 @@ doesn't make sense to return from this function as the bootloader is gone.
 */
 .section .text
 .global _start
-.global kernel_main
+.type _start, @function
 _start:
 	/*
 	The bootloader has loaded us into 32-bit protected mode on a x86
@@ -84,8 +86,6 @@ _start:
 	stack since (pushed 0 bytes so far), so the alignment has thus been
 	preserved and the call is well defined.
 	*/
-
-	push %ebx
 	call kernel_main
  
 	/*
@@ -100,6 +100,12 @@ _start:
 	3) Jump to the hlt instruction if it ever wakes up due to a
 	   non-maskable interrupt occurring or due to system management mode.
 	*/
-
-wait:
-	jmp wait
+	hlt     # 停机指令
+loop:	
+	jmp loop
+ 
+/*
+Set the size of the _start symbol to the current location '.' minus its start.
+This is useful when debugging or when you implement call tracing.
+*/
+.size _start, . - _start

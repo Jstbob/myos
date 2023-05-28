@@ -1,0 +1,570 @@
+extern void isr0();
+extern void isr1();
+extern void isr2();
+extern void isr3();
+extern void isr4();
+extern void isr5();
+extern void isr6();
+extern void isr7();
+extern void isr8();
+extern void isr9();
+extern void isr10();
+extern void isr11();
+extern void isr12();
+extern void isr13();
+extern void isr14();
+extern void isr15();
+extern void isr16();
+extern void isr17();
+extern void isr18();
+extern void isr19();
+extern void isr20();
+extern void isr21();
+extern void isr22();
+extern void isr23();
+extern void isr24();
+extern void isr25();
+extern void isr26();
+extern void isr27();
+extern void isr28();
+extern void isr29();
+extern void isr30();
+extern void isr31();
+register_idt( 0, (uint32_t)isr0 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 1, (uint32_t)isr1 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 2, (uint32_t)isr2 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 3, (uint32_t)isr3 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 4, (uint32_t)isr4 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 5, (uint32_t)isr5 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 6, (uint32_t)isr6 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 7, (uint32_t)isr7 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 8, (uint32_t)isr8 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 9, (uint32_t)isr9 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 10, (uint32_t)isr10 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 11, (uint32_t)isr11 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 12, (uint32_t)isr12 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 13, (uint32_t)isr13 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 14, (uint32_t)isr14 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 15, (uint32_t)isr15 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 16, (uint32_t)isr16 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 17, (uint32_t)isr17 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 18, (uint32_t)isr18 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 19, (uint32_t)isr19 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 20, (uint32_t)isr20 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 21, (uint32_t)isr21 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 22, (uint32_t)isr22 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 23, (uint32_t)isr23 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 24, (uint32_t)isr24 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 25, (uint32_t)isr25 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 26, (uint32_t)isr26 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 27, (uint32_t)isr27 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 28, (uint32_t)isr28 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 29, (uint32_t)isr29 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 30, (uint32_t)isr30 , 0x08, 0x8E, &idt_call_back_fun);
+register_idt( 31, (uint32_t)isr31 , 0x08, 0x8E, &idt_call_back_fun);
+                isr0:
+                    cli
+                    push $0
+                    push $0
+                    jmp isr_common_stub
+                
+                isr1:
+                    cli
+                    push $0
+                    push $1
+                    jmp isr_common_stub
+                
+                isr2:
+                    cli
+                    push $0
+                    push $2
+                    jmp isr_common_stub
+                
+                isr3:
+                    cli
+                    push $0
+                    push $3
+                    jmp isr_common_stub
+                
+                isr4:
+                    cli
+                    push $0
+                    push $4
+                    jmp isr_common_stub
+                
+                isr5:
+                    cli
+                    push $0
+                    push $5
+                    jmp isr_common_stub
+                
+                isr6:
+                    cli
+                    push $0
+                    push $6
+                    jmp isr_common_stub
+                
+                isr7:
+                    cli
+                    push $0
+                    push $7
+                    jmp isr_common_stub
+                
+                isr8:
+                    cli
+                    push $8
+                    jmp isr_common_stub
+                
+                isr9:
+                    cli
+                    push $0
+                    push $9
+                    jmp isr_common_stub
+                
+                isr10:
+                    cli
+                    push $10
+                    jmp isr_common_stub
+                
+                isr11:
+                    cli
+                    push $11
+                    jmp isr_common_stub
+                
+                isr12:
+                    cli
+                    push $12
+                    jmp isr_common_stub
+                
+                isr13:
+                    cli
+                    push $13
+                    jmp isr_common_stub
+                
+                isr14:
+                    cli
+                    push $14
+                    jmp isr_common_stub
+                
+                isr15:
+                    cli
+                    push $0
+                    push $15
+                    jmp isr_common_stub
+                
+                isr16:
+                    cli
+                    push $0
+                    push $16
+                    jmp isr_common_stub
+                
+                isr17:
+                    cli
+                    push $0
+                    push $17
+                    jmp isr_common_stub
+                
+                isr18:
+                    cli
+                    push $0
+                    push $18
+                    jmp isr_common_stub
+                
+                isr19:
+                    cli
+                    push $0
+                    push $19
+                    jmp isr_common_stub
+                
+                isr20:
+                    cli
+                    push $0
+                    push $20
+                    jmp isr_common_stub
+                
+                isr21:
+                    cli
+                    push $0
+                    push $21
+                    jmp isr_common_stub
+                
+                isr22:
+                    cli
+                    push $0
+                    push $22
+                    jmp isr_common_stub
+                
+                isr23:
+                    cli
+                    push $0
+                    push $23
+                    jmp isr_common_stub
+                
+                isr24:
+                    cli
+                    push $0
+                    push $24
+                    jmp isr_common_stub
+                
+                isr25:
+                    cli
+                    push $0
+                    push $25
+                    jmp isr_common_stub
+                
+                isr26:
+                    cli
+                    push $0
+                    push $26
+                    jmp isr_common_stub
+                
+                isr27:
+                    cli
+                    push $0
+                    push $27
+                    jmp isr_common_stub
+                
+                isr28:
+                    cli
+                    push $0
+                    push $28
+                    jmp isr_common_stub
+                
+                isr29:
+                    cli
+                    push $0
+                    push $29
+                    jmp isr_common_stub
+                
+                isr30:
+                    cli
+                    push $0
+                    push $30
+                    jmp isr_common_stub
+                
+                isr31:
+                    cli
+                    push $0
+                    push $31
+                    jmp isr_common_stub
+                
+.global isr0
+.global isr1
+.global isr2
+.global isr3
+.global isr4
+.global isr5
+.global isr6
+.global isr7
+.global isr8
+.global isr9
+.global isr10
+.global isr11
+.global isr12
+.global isr13
+.global isr14
+.global isr15
+.global isr16
+.global isr17
+.global isr18
+.global isr19
+.global isr20
+.global isr21
+.global isr22
+.global isr23
+.global isr24
+.global isr25
+.global isr26
+.global isr27
+.global isr28
+.global isr29
+.global isr30
+.global isr31
+isr0:
+    cli
+    push $0
+    jmp isr_common_stub
+            
+isr1:
+    cli
+    push $1
+    jmp isr_common_stub
+            
+isr2:
+    cli
+    push $2
+    jmp isr_common_stub
+            
+isr3:
+    cli
+    push $3
+    jmp isr_common_stub
+            
+isr4:
+    cli
+    push $4
+    jmp isr_common_stub
+            
+isr5:
+    cli
+    push $5
+    jmp isr_common_stub
+            
+isr6:
+    cli
+    push $6
+    jmp isr_common_stub
+            
+isr7:
+    cli
+    push $7
+    jmp isr_common_stub
+            
+isr8:
+    cli
+    push $8
+    jmp isr_common_stub
+            
+isr9:
+    cli
+    push $9
+    jmp isr_common_stub
+            
+isr10:
+    cli
+    push $10
+    jmp isr_common_stub
+            
+isr11:
+    cli
+    push $11
+    jmp isr_common_stub
+            
+isr12:
+    cli
+    push $12
+    jmp isr_common_stub
+            
+isr13:
+    cli
+    push $13
+    jmp isr_common_stub
+            
+isr14:
+    cli
+    push $14
+    jmp isr_common_stub
+            
+isr15:
+    cli
+    push $15
+    jmp isr_common_stub
+            
+isr16:
+    cli
+    push $16
+    jmp isr_common_stub
+            
+isr17:
+    cli
+    push $17
+    jmp isr_common_stub
+            
+isr18:
+    cli
+    push $18
+    jmp isr_common_stub
+            
+isr19:
+    cli
+    push $19
+    jmp isr_common_stub
+            
+isr20:
+    cli
+    push $20
+    jmp isr_common_stub
+            
+isr21:
+    cli
+    push $21
+    jmp isr_common_stub
+            
+isr22:
+    cli
+    push $22
+    jmp isr_common_stub
+            
+isr23:
+    cli
+    push $23
+    jmp isr_common_stub
+            
+isr24:
+    cli
+    push $24
+    jmp isr_common_stub
+            
+isr25:
+    cli
+    push $25
+    jmp isr_common_stub
+            
+isr26:
+    cli
+    push $26
+    jmp isr_common_stub
+            
+isr27:
+    cli
+    push $27
+    jmp isr_common_stub
+            
+isr28:
+    cli
+    push $28
+    jmp isr_common_stub
+            
+isr29:
+    cli
+    push $29
+    jmp isr_common_stub
+            
+isr30:
+    cli
+    push $30
+    jmp isr_common_stub
+            
+isr31:
+    cli
+    push $31
+    jmp isr_common_stub
+            
+register_idt(32, (uint32_t)&irq0, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(33, (uint32_t)&irq1, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(34, (uint32_t)&irq2, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(35, (uint32_t)&irq3, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(36, (uint32_t)&irq4, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(37, (uint32_t)&irq5, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(38, (uint32_t)&irq6, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(39, (uint32_t)&irq7, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(40, (uint32_t)&irq8, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(41, (uint32_t)&irq9, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(42, (uint32_t)&irq10, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(43, (uint32_t)&irq11, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(44, (uint32_t)&irq12, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(45, (uint32_t)&irq13, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(46, (uint32_t)&irq14, 0x08, 0x8E, &idt_call_back_fun);
+register_idt(47, (uint32_t)&irq15, 0x08, 0x8E, &idt_call_back_fun);
+extern void irq0();
+extern void irq1();
+extern void irq2();
+extern void irq3();
+extern void irq4();
+extern void irq5();
+extern void irq6();
+extern void irq7();
+extern void irq8();
+extern void irq9();
+extern void irq10();
+extern void irq11();
+extern void irq12();
+extern void irq13();
+extern void irq14();
+extern void irq15();
+irq0:
+    cli
+    push $32
+    jmp isr_common_stub
+            
+irq1:
+    cli
+    push $33
+    jmp isr_common_stub
+            
+irq2:
+    cli
+    push $34
+    jmp isr_common_stub
+            
+irq3:
+    cli
+    push $35
+    jmp isr_common_stub
+            
+irq4:
+    cli
+    push $36
+    jmp isr_common_stub
+            
+irq5:
+    cli
+    push $37
+    jmp isr_common_stub
+            
+irq6:
+    cli
+    push $38
+    jmp isr_common_stub
+            
+irq7:
+    cli
+    push $39
+    jmp isr_common_stub
+            
+irq8:
+    cli
+    push $40
+    jmp isr_common_stub
+            
+irq9:
+    cli
+    push $41
+    jmp isr_common_stub
+            
+irq10:
+    cli
+    push $42
+    jmp isr_common_stub
+            
+irq11:
+    cli
+    push $43
+    jmp isr_common_stub
+            
+irq12:
+    cli
+    push $44
+    jmp isr_common_stub
+            
+irq13:
+    cli
+    push $45
+    jmp isr_common_stub
+            
+irq14:
+    cli
+    push $46
+    jmp isr_common_stub
+            
+irq15:
+    cli
+    push $47
+    jmp isr_common_stub
+            
+.global irq0
+.global irq1
+.global irq2
+.global irq3
+.global irq4
+.global irq5
+.global irq6
+.global irq7
+.global irq8
+.global irq9
+.global irq10
+.global irq11
+.global irq12
+.global irq13
+.global irq14
+.global irq15

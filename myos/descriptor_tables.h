@@ -1,10 +1,32 @@
-#ifndef _IDT_H
-#define _IDT_H
+#ifndef _DESCRIPTOR_TABLES_H
+#define _DESCRIPTOR_TABLES_H
 
 #include <stdint.h>
 
-void init_idt();
-extern void idt_flush(uint32_t);
+struct registers_t {
+    uint32_t ds;                                   // Data segment selector
+    uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax; // Pushed by pusha.
+    uint32_t int_no;
+}__attribute__((packed));
+
+struct gdt_ptr_t {
+    uint16_t limit; // The upper 16 bits of all selector limits.
+    uint32_t base;  // The fisrt address about segment descriptor entry.
+}__attribute__((packed));
+
+struct idt_ptr_t {
+    uint16_t limit; // The upper 16 bits of all selector limits.
+    uint32_t base;  // The fisrt address about segment descriptor entry.
+}__attribute__((packed));
+
+typedef void (*idt_call_back)(struct registers_t *);
+
+void init_descriptor_tables();
+void register_idt(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags,
+                  idt_call_back idt_call_back_fun);
+void idt_disatch(struct registers_t regs);
+
+void init_iqr();
 
 extern void isr0();
 extern void isr1();
@@ -39,10 +61,6 @@ extern void isr29();
 extern void isr30();
 extern void isr31();
 
-void exception_handler(uint32_t err_no);
-
-void remap_irq_table();
-
 extern void irq0();
 extern void irq1();
 extern void irq2();
@@ -59,11 +77,5 @@ extern void irq12();
 extern void irq13();
 extern void irq14();
 extern void irq15();
-
-void irq_handler_c(uint32_t err_no);
-
-void call_timer_back();
-
-void init_timer(uint32_t frequency);
 
 #endif

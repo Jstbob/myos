@@ -10,5 +10,6 @@ void move_cursor(uint16_t x, uint16_t y);
 void enter_new_line();
 void monitor_write_msg(const char *str);
 void monitor_write_hex(char *p, uint32_t length);
+void monitor_print_msg(const char *msg, uint32_t size);
 
 #endif

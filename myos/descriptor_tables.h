@@ -26,7 +26,7 @@ void register_idt(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags,
                   idt_call_back idt_call_back_fun);
 void idt_disatch(struct registers_t regs);
 
-void init_iqr();
+void init_irq();
 
 extern void isr0();
 extern void isr1();

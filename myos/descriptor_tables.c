@@ -184,7 +184,7 @@ void idt_disatch(struct registers_t regs) {
 
 static void init_timer();
 
-void init_iqr() {
+void init_irq() {
     outb(0x20, 0x11);
     outb(0xA0, 0x11);
     outb(0x21, 0x20);

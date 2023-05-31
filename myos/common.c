@@ -30,6 +30,13 @@ void panic(const char *message, const char *file, uint32_t line) {
     monitor_write_hex((char *)&line, sizeof(line));
     monitor_write_msg("\n");
     // Halt by going into an infinite loop.
-    for (;;)
+    while (1)
         ;
+}
+
+// Write len copies of val into dest.
+void memset(uint8_t *dest, uint8_t val, uint32_t len) {
+    uint8_t *temp = (uint8_t *)dest;
+    for (; len != 0; len--)
+        *temp++ = val;
 }

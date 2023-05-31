@@ -28,4 +28,16 @@ qemu-gdb: kernel.img
 	qemu-system-i386 -kernel kernel.img -m 128M -s -S -serial stdio
 
 clean:
-	rm -rf *.o *.img
+	rm -rf *.o *.img*
+
+initrd.img: create_initrd.cpp
+	g++ $? -o create_initrd.out
+	./create_initrd.out
+
+iso:
+	cp -f kernel.img initrd.img ../iso/
+	rm -f ../myos.iso
+	grub-mkrescue -o ../myos.iso ../iso/
+
+qemu-iso:
+	qemu-system-i386 -cdrom ../myos.iso -m 128M

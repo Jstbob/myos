@@ -133,3 +133,9 @@ static char numb2char_16(char numb) {
     }
     return c;
 }
+
+void monitor_print_msg(const char *msg, uint32_t size) {
+    for (int i = 0; i < size; ++i) {
+        monitor_write_char(msg[i]);
+    }
+}

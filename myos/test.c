@@ -1,15 +1,19 @@
 #include "descriptor_tables.h"
 #include "monitor.h"
+#include "paging.h"
+#include <assert.h>
 #include <stdint.h>
 
 static void test_monitor_main();
 static void test_intterupt();
 static void test_timer();
+static void test_paging();
 
 void test_main() {
     // test_monitor_main();
     // test_intterupt();
-    test_timer();
+    // test_timer();
+    test_paging();
 }
 
 static void test_monitor_write_msg() {
@@ -20,7 +24,7 @@ static void test_monitor_write_msg() {
 }
 
 // test monitor is pass
-static void test_monitor_main() { 
+static void test_monitor_main() {
     init_monitor();
     for (int i = 0; i < 25; ++i) {
         monitor_write_char('\n');
@@ -66,12 +70,37 @@ static void test_intterupt() {
     asm volatile("int $5;");
 };
 
-static void test_timer(){
+static void test_timer() {
     init_monitor();
     init_descriptor_tables();
-    init_iqr();
+    init_irq();
     asm volatile("int $4;");
     asm volatile("int $34;");
     asm volatile("int $32;");
-    while(1);
+    while (1)
+        ;
 }
+
+static void test_paging() {
+    init_monitor();
+    init_descriptor_tables();
+    init_paging();
+    uint32_t *ptr = (uint32_t *)0x80000000;
+    *ptr = 20;
+    uint32_t *u_ptr = (uint32_t *)0xf0000000;
+    *u_ptr = 20;
+    while (1)
+        ;
+}
+
+// static void test_paging() {
+//     init_monitor();
+//     init_descriptor_tables();
+//     initialise_paging();
+//     uint32_t *ptr = (uint32_t *)0x100000000;
+//     *ptr = 20;
+//     uint32_t *u_ptr = (uint32_t *)0xf0000000;
+//     *u_ptr = 20;
+//     while (1)
+//         ;
+// }

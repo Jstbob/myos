@@ -66,6 +66,7 @@ _start:
 	in assembly as languages such as C cannot function without a stack.
 	*/
 	mov $stack_top, %esp
+	mov $stack_bottom, %ebp
  
 	/*
 	This is a good place to initialize crucial processor state before the

@@ -13,4 +13,4 @@ AlwaysBreakAfterReturnType: None
 
 SpaceBeforeParens: Custom
 SpaceBeforeParensOptions:
-  AfterFunctionDeclarationName: false
+	AfterFunctionDeclarationName: false

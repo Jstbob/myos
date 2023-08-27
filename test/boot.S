@@ -1,131 +1,86 @@
-/*  boot.S - bootstrap the kernel */
-/*  Copyright (C) 1999, 2001, 2010  Free Software Foundation, Inc.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+.set MAGIC, 0xe85250d6
+.set ARCHITECTURE, 0
+.set HEAD_LENGTH, head_end - head
+.set CHECKSUM, - (MAGIC + HEAD_LENGTH)
 
-#define ASM_FILE        1
+.section .boot
 
-.set GRUB_MULTIBOOT_ARCHITECTURE_I386, 0
-.set MULTIBOOT2_HEADER_MAGIC, 0xe85250d6
-.set MULTIBOOT_HEADER_TAG_ADDRESS, 2
-.set MULTIBOOT_HEADER_TAG_OPTIONAL, 0
-.set MULTIBOOT_HEADER_TAG_FRAMEBUFFER, 5
-.set MULTIBOOT_HEADER_TAG_END, 0
-.set MULTIBOOT_HEADER_TAG_ENTRY_ADDRESS, 3
+.align  8
+head:
+.long MAGIC
+.long ARCHITECTURE
+.long HEAD_LENGTH
+.long CHECKSUM
 
-/*  C symbol format. HAVE_ASM_USCORE is defined by configure. */
-#ifdef HAVE_ASM_USCORE
-# define EXT_C(sym)                     _ ## sym
-#else
-# define EXT_C(sym)                     sym
-#endif
+// .extern phys
+// .extern bss_start
+// .extern _end
 
-/*  The size of our stack (16KB). */
-#define STACK_SIZE                      0x4000
+// /* Address tag */
+// .align 8
+// mb2_tag_addr:
+// .word 2
+// .word 1
+// .long 24
+// .long head
+// .long phys
+// .long bss_start
+// .long _end
 
-/*  The flags for the Multiboot header. */
-#ifdef __ELF__
-# define AOUT_KLUDGE 0
-#else
-# define AOUT_KLUDGE MULTIBOOT_AOUT_KLUDGE
-#endif
-        
-        .section .text
-        
-        .globl  start, _start
-        .globl multiboot_entry
-start:
+// /* Entry tag */
+// .align 8
+// mb2_tag_entry:
+// .word 3
+// .word 1
+// .long 12
+// .long _start
+
+// /* Framebuffer tag */
+// .align 8
+// mb2_tag_fb:
+// .word 5
+// .word 1
+// .long 20
+// .long 800
+// .long 600
+// .long 32
+
+// .align 8
+// .word 4
+// .word 1
+// .long 12
+// .long 2 /* We support EGA text, but don't require it */
+
+// /* Modules must be aligned */
+// .align 8
+// .word 6
+// .word 0
+// .long 8
+
+/* End tag */
+.align 8
+.word 0
+.word 0
+.long 8
+head_end:
+
+
+.section .text
+.extern cmain
+.global _start
 _start:
-        jmp     multiboot_entry
+        movl $stack_top, %esp
+        // pushl $0
+        // popf
+        pushl %ebx
+        pushl %eax
+        call cmain
 
-        /*  Align 64 bits boundary. */
-        .align  8
-        
-        /*  Multiboot header. */
-multiboot_header:
-        /*  magic */
-        .long   MULTIBOOT2_HEADER_MAGIC
-        /*  ISA: i386 */
-        .long   GRUB_MULTIBOOT_ARCHITECTURE_I386
-        /*  Header length. */
-        .long   multiboot_header_end - multiboot_header
-        /*  checksum */
-        .long   -(MULTIBOOT2_HEADER_MAGIC + GRUB_MULTIBOOT_ARCHITECTURE_I386 + (multiboot_header_end - multiboot_header))
-#ifndef __ELF__
-address_tag_start:      
-        .short MULTIBOOT_HEADER_TAG_ADDRESS
-        .short MULTIBOOT_HEADER_TAG_OPTIONAL
-        .long address_tag_end - address_tag_start
-        /*  header_addr */
-        .long   multiboot_header
-        /*  load_addr */
-        .long   _start
-        /*  load_end_addr */
-        .long   _end
-        /*  bss_end_addr */
-        .long   _end
-address_tag_end:
-entry_address_tag_start:        
-        .short MULTIBOOT_HEADER_TAG_ENTRY_ADDRESS
-        .short MULTIBOOT_HEADER_TAG_OPTIONAL
-        .long entry_address_tag_end - entry_address_tag_start
-        /*  entry_addr */
-        .long multiboot_entry
-entry_address_tag_end:
-#endif /*  __ELF__ */
-framebuffer_tag_start:  
-        .short MULTIBOOT_HEADER_TAG_FRAMEBUFFER
-        .short MULTIBOOT_HEADER_TAG_OPTIONAL
-        .long framebuffer_tag_end - framebuffer_tag_start
-        .long 1024
-        .long 768
-        .long 32
-framebuffer_tag_end:
-        .short MULTIBOOT_HEADER_TAG_END
-        .short 0
-        .long 8
-multiboot_header_end:
+loop:
+        hlt
+        jmp loop
 
-multiboot_entry:
-        /*  Initialize the stack pointer. */
-        movl    $stack_top, %esp
-
-        /*  Reset EFLAGS. */
-        pushl   $0
-        popf
-
-        /*  Push the pointer to the Multiboot information structure. */
-        pushl   %ebx
-        /*  Push the magic value. */
-        pushl   %eax
-
-        /*  Now enter the C main function... */
-        call    cmain
-
-        /*  Halt. */
-        // pushl   $halt_message
-        // call    EXT_C(printf)
-        
-loop:   hlt
-        jmp     loop
-
-halt_message:
-        .asciz  "Halted."
-
-        /*  Our stack area. */
+.section .stack
 stack_bottom:
-.fill STACK_SIZE,0
+.skip 16384
 stack_top:
-

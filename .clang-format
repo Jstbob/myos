@@ -1,0 +1,16 @@
+BasedOnStyle: GNU
+UseTab: Never
+IndentWidth: 4
+TabWidth: 4
+BreakBeforeBraces: Attach
+AllowShortIfStatementsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+PPIndentWidth: 1
+IndentPPDirectives: AfterHash
+BreakAfterAttributes: Always
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
+
+SpaceBeforeParens: Custom
+SpaceBeforeParensOptions:
+	AfterFunctionDeclarationName: false

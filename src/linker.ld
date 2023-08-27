@@ -1,9 +1,8 @@
-ENTRY(entry)
+ENTRY(_entry)
 
 SECTIONS
 {
     . = 1M;
-    load_address = .;
 
     .text :
     {
@@ -21,12 +20,10 @@ SECTIONS
         *(.rodata)
     }
 
-    bss_start = .;
     .bss :
     {
+        *(COMMON)
         *(.bss)
+        *(.stack)
     }
-    bss_end_addr = .;
-
-    load_end_addr = .;
 }

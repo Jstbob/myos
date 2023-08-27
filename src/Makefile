@@ -12,10 +12,11 @@ OBJS := $(SRCS:%=%.o)
 kernel: $(OBJS)
 	ld -m elf_i386 -T linker.ld $? -o $@.elf
 
-qemu:
+# only supply multiboot1
+qemu-debug:
 	qemu-system-i386 -m 128M -s -S -kernel kernel.elf -machine type=pc-i440fx-3.1
 
-qemu-cd:
+qemu-iso-debug:
 	qemu-system-i386 -m 128M -s -S -boot d -cdrom kernel.iso
 
 qemu-iso:
@@ -26,6 +27,6 @@ clean:
 	rm -rf *.o
 
 .PHYON:
-boot-iso:
+iso: kernel
 	cp ./kernel.elf ./iso/boot/ -f
 	grub-mkrescue -o kernel.iso iso/

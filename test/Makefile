@@ -22,7 +22,7 @@ qemu-cd:
 	qemu-system-i386 -m 128M -boot d -cdrom kernel.iso -s -S
 
 qemu-iso:
-	qemu-system-i386 -m 128M -cdrom kernel.iso
+	qemu-system-i386 -m 128M -cdrom kernel.iso -boot d
 
 .PHYON:
 boot-iso:

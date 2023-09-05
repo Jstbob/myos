@@ -1,0 +1,1 @@
+测试`multiboot2`启动的情况，qemu不能直接从`multiboot2`的头文件启动。

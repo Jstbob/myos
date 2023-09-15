@@ -3,6 +3,7 @@
 
 // 假定内核所占物理内存的大小为32MB，占用8个页目录
 #define KERNEL_MEMORY (1024 * 1024 * 32)
+#define KERNEL_PDS 8
 
 #define PD_COUNT 1024
 #define PT_COUNT 1024
@@ -33,7 +34,7 @@
   *     (base&0xff)<<32 | base , todo
   *     0x00, , , 0x00
   *     0x00, , , 
-  * 可以拆分成4个字节构建:
+  * 可以拆分成8个字节构建:
   * 第一字节0x00，第二字节0xcf，第三字节0x90|DPL<<5|TYPE, 第四字节0x00
   * 第五字节0x00，第六字节0x00，第七字节0xff，第八字节0xff
   * DPL为0、3，TYPE为3、b
@@ -49,7 +50,7 @@
   *     0x00, 0x18
   *     0x00, 0x20
   */
- 
+
 #define SEG(FLAGS)  ((0xcf<<48)|(FLAGS<<40)|0xffff)
 #define NULL_SEG    0
 #define KCODE_SEG   SEG(0x9a)

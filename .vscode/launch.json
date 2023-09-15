@@ -1,0 +1,28 @@
+// gdb remote debug
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "gdb",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/main/kernel.elf",
+            "miDebuggerServerAddress": "127.0.0.1:1234",
+            "miDebuggerPath": "C:/Qt/Tools/mingw810_64/bin/gdb.exe",
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}/main",
+            // "args": ["-c", "/opt/codes.bix", "/opt/etc/init_srx.cfg"],
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            // "preLaunchTask": "qemu-debug"
+        }
+    ]
+}

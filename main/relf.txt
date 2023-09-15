@@ -1,0 +1,129 @@
+ELF Header:
+  Magic:   7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF32
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           Intel 80386
+  Version:                           0x1
+  Entry point address:               0x100030
+  Start of program headers:          52 (bytes into file)
+  Start of section headers:          8424044 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               52 (bytes)
+  Size of program headers:           32 (bytes)
+  Number of program headers:         4
+  Size of section headers:           40 (bytes)
+  Number of section headers:         14
+  Section header string table index: 13
+
+Section Headers:
+  [Nr] Name              Type            Addr     Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            00000000 000000 000000 00      0   0  0
+  [ 1] .text             PROGBITS        00100000 001000 000a6f 00  AX  0   0 4096
+  [ 2] .bss              PROGBITS        00101000 002000 803018 00  WA  0   0 4096
+  [ 3] .data             PROGBITS        00905000 806000 000083 00  WA  0   0 4096
+  [ 4] .got.plt          PROGBITS        00905084 806084 00000c 04  WA  0   0  4
+  [ 5] .debug_line       PROGBITS        00000000 806090 0006b2 00      0   0  1
+  [ 6] .debug_line_str   PROGBITS        00000000 806742 0000bc 01  MS  0   0  1
+  [ 7] .debug_info       PROGBITS        00000000 8067fe 000e8e 00      0   0  1
+  [ 8] .debug_abbrev     PROGBITS        00000000 80768c 00064f 00      0   0  1
+  [ 9] .debug_aranges    PROGBITS        00000000 807ce0 0000c0 00      0   0  8
+  [10] .debug_str        PROGBITS        00000000 807da0 00065f 01  MS  0   0  1
+  [11] .symtab           SYMTAB          00000000 808400 0003d0 10     12  28  4
+  [12] .strtab           STRTAB          00000000 8087d0 000217 00      0   0  1
+  [13] .shstrtab         STRTAB          00000000 8089e7 000085 00      0   0  1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
+  L (link order), O (extra OS processing required), G (group), T (TLS),
+  C (compressed), x (unknown), o (OS specific), E (exclude),
+  D (mbind), p (processor specific)
+
+There are no section groups in this file.
+
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  LOAD           0x001000 0x00100000 0x00100000 0x00a6f 0x00a6f R E 0x1000
+  LOAD           0x002000 0x00101000 0x00101000 0x803018 0x803018 RW  0x1000
+  LOAD           0x806000 0x00905000 0x00905000 0x00090 0x00090 RW  0x1000
+  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RWE 0x10
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .text 
+   01     .bss 
+   02     .data .got.plt 
+   03     
+
+There is no dynamic section in this file.
+
+There are no relocations in this file.
+No processor specific unwind information to decode
+
+Symbol table '.symtab' contains 61 entries:
+   Num:    Value  Size Type    Bind   Vis      Ndx Name
+     0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 00000000     0 FILE    LOCAL  DEFAULT  ABS boot.S.o
+     2: 1badb002     0 NOTYPE  LOCAL  DEFAULT  ABS MAGIC
+     3: 00000001     0 NOTYPE  LOCAL  DEFAULT  ABS FLAGS
+     4: e4524ffd     0 NOTYPE  LOCAL  DEFAULT  ABS CHECKSUM
+     5: 00501000     0 NOTYPE  LOCAL  DEFAULT    2 stack_end
+     6: 001000e0     0 NOTYPE  LOCAL  DEFAULT    1 gdtr
+     7: 00100057     0 NOTYPE  LOCAL  DEFAULT    1 flush_cs
+     8: 00100069     0 NOTYPE  LOCAL  DEFAULT    1 set_pd
+     9: 0010008c     0 NOTYPE  LOCAL  DEFAULT    1 set_pt
+    10: 001000b5     0 NOTYPE  LOCAL  DEFAULT    1 rep
+    11: 001000b8     0 NOTYPE  LOCAL  DEFAULT    1 gdt
+    12: 00101000     0 NOTYPE  LOCAL  DEFAULT    2 stack_head
+    13: 00000000     0 FILE    LOCAL  DEFAULT  ABS console.c
+    14: 00501000     8 OBJECT  LOCAL  DEFAULT    2 video
+    15: 00000000     0 FILE    LOCAL  DEFAULT  ABS kmain.c
+    16: 00904000     4 OBJECT  LOCAL  DEFAULT    2 heap_start
+    17: 00904004     4 OBJECT  LOCAL  DEFAULT    2 heap_size
+    18: 00904008     4 OBJECT  LOCAL  DEFAULT    2 mem_heap
+    19: 00905000     1 OBJECT  LOCAL  DEFAULT    3 node_size
+    20: 00000000     0 FILE    LOCAL  DEFAULT  ABS mem.c
+    21: 0090400c     4 OBJECT  LOCAL  DEFAULT    2 kmem
+    22: 00000000     0 FILE    LOCAL  DEFAULT  ABS mem_r.c
+    23: 00904010     4 OBJECT  LOCAL  DEFAULT    2 heap_size
+    24: 00904014     4 OBJECT  LOCAL  DEFAULT    2 mem_heap
+    25: 0090502f     1 OBJECT  LOCAL  DEFAULT    3 node_size
+    26: 00000000     0 FILE    LOCAL  DEFAULT  ABS 
+    27: 00905084     0 OBJECT  LOCAL  DEFAULT    4 _GLOBAL_OFFSET_TABLE_
+    28: 00903000  4096 OBJECT  GLOBAL DEFAULT    2 kernel_pd
+    29: 0010001b     0 NOTYPE  GLOBAL DEFAULT    1 inb
+    30: 00100117    90 FUNC    GLOBAL DEFAULT    1 clear_screent
+    31: 00100a26    73 FUNC    GLOBAL DEFAULT    1 mem_cpy
+    32: 001007e2    39 FUNC    GLOBAL DEFAULT    1 get_heap_start_size
+    33: 00100809   105 FUNC    GLOBAL DEFAULT    1 init_mem_heap
+    34: 001002fa   139 FUNC    GLOBAL DEFAULT    1 srcoll_line
+    35: 00503000 0x400000 OBJECT  GLOBAL DEFAULT    2 kernel_pt
+    36: 00100733   175 FUNC    GLOBAL DEFAULT    1 kfree
+    37: 0010058d    75 FUNC    GLOBAL DEFAULT    1 swap
+    38: 0010048b     0 FUNC    GLOBAL HIDDEN     1 __x86.get_pc_thunk.ax
+    39: 00906000     0 NOTYPE  GLOBAL DEFAULT    4 _bin_end
+    40: 001004f2   155 FUNC    GLOBAL DEFAULT    1 init_kernel_heap
+    41: 00100030     0 NOTYPE  GLOBAL DEFAULT    1 boot
+    42: 00100872   241 FUNC    GLOBAL DEFAULT    1 krmalloc
+    43: 0010048f     0 FUNC    GLOBAL HIDDEN     1 __x86.get_pc_thunk.dx
+    44: 00906000     0 NOTYPE  GLOBAL DEFAULT    4 heap_start
+    45: 001000e6    49 FUNC    GLOBAL DEFAULT    1 console_init
+    46: 001005d8   142 FUNC    GLOBAL DEFAULT    1 sort_header
+    47: 00502000    24 OBJECT  GLOBAL DEFAULT    2 GRUB_PACKED
+    48: 0010044a    65 FUNC    GLOBAL DEFAULT    1 panic
+    49: 00100493     0 FUNC    GLOBAL HIDDEN     1 __x86.get_pc_thunk.bx
+    50: 0010000c     0 NOTYPE  GLOBAL DEFAULT    1 outb
+    51: 00100171   101 FUNC    GLOBAL DEFAULT    1 console_putchar
+    52: 00100963    89 FUNC    GLOBAL DEFAULT    1 merge_free_node
+    53: 001003d0   122 FUNC    GLOBAL DEFAULT    1 push_char
+    54: 001001d6   174 FUNC    GLOBAL DEFAULT    1 move_pos
+    55: 00100284   118 FUNC    GLOBAL DEFAULT    1 clear_line
+    56: 00100666   205 FUNC    GLOBAL DEFAULT    1 kmalloc
+    57: 00100027     0 NOTYPE  GLOBAL DEFAULT    1 exit
+    58: 00100497    91 FUNC    GLOBAL DEFAULT    1 kmain
+    59: 001009bc   106 FUNC    GLOBAL DEFAULT    1 krfree
+    60: 00100385    75 FUNC    GLOBAL DEFAULT    1 enter
+
+No version information found in this file.

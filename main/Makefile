@@ -1,4 +1,4 @@
-CFLAGS := -m32 -nostdlib -g
+CFLAGS := -m32 -nostdlib -g -Wall
 
 # 不要使用.s，.s不能引用宏定义头
 SRCS := $(shell find . -type f -name "*.c" -or -name "*.S")
@@ -16,7 +16,10 @@ $(PROJECT_NAME): $(OBJS)
 
 .PHYON:
 clean:
-	rm -rf *.o
+	rm -rf *.o *.elf *.out
 
 qemu-debug: $(PROJECT_NAME).elf
 	qemu-system-i386 -s -S -kernel $(PROJECT_NAME).elf
+
+qemu: $(PROJECT_NAME).elf
+	qemu-system-i386 -kernel $(PROJECT_NAME).elf

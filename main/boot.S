@@ -67,7 +67,7 @@ set_pt:
     # 开启分页，使能PG、WP位
     movl %cr0, %eax
     orl $0x80000001, %eax
-    # bug: 设置cr0后，内存内容消失，页面和目录必须填充满才有效
+    # -bug: 设置cr0后，内存内容消失，页面和目录必须填充满才有效
     movl %eax, %cr0     
 
     call kmain  # 进入内核

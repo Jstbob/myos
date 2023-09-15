@@ -1,0 +1,19 @@
+{
+    // "terminal.integrated.env.windows": {
+    //     "PATH": "${env:PATH};C:/Qt/Tools/mingw810_64/bin"
+    // },
+    "terminal.integrated.profiles.windows": {
+        "Git Bash": {
+            "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+            "args": [
+                "-i",
+                "-l"
+            ]
+        },
+    },
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
+    "files.associations": {
+        "asm.h": "c",
+        "boot.h": "c"
+    },
+}

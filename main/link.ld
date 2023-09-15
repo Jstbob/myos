@@ -2,12 +2,12 @@ ENTRY(boot)
 
 SECTIONS
 {
-    . = 1M;    # bios占用区
+    . = 1M ;    # bios占用区
 
     .text : ALIGN(4096)
     {
         *(.multiboot)
-        *(.text)
+        *(.text*)
     }
 
     .bss : ALIGN(4096)
@@ -19,10 +19,19 @@ SECTIONS
 
     .data : ALIGN(4096)
     {
-        *(.data)
+        *(.data .*data)
+        *(.comment)
+        *(.symtab)
     }
 
-    _end = (. + 4096) & 4096;    # 内核映像4k对齐
+    # 丢弃一些扇区
+	/DISCARD/ : {
+		*(.eh_frame .note.GNU-stack)
+	}
+
+    . = ALIGN(4096) ;
+    _bin_end = . ;    # 内核映像4k对齐, 0x905010
+    heap_start = . ;
     # _end之后的区域为可用区域
     # 人为约定内核区域为32MB，0-32MB逻辑地址映射到0-32MB的物理地址，2GB以上映射到32MB - PHY_MAX。
 }

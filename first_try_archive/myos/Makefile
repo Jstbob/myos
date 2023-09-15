@@ -3,7 +3,7 @@ ifeq ($(DEBUG),1)
 	as --32 $< -o $@ -g
 
 %.c.o: %.c
-	gcc -m32 -c $< -o $@ -nostdlib -I /usr/include/x86_64-linux-gnu -g -DDEBUG
+	gcc -m32 -c $< -o $@ -nostdlib -g -DDEBUG
 
 SRCS := $(shell find . -name "*.c" -or -name "*.s" ! -name "test*" -type f)
 else
@@ -11,7 +11,7 @@ else
 	as --32 $< -o $@
 
 %.c.o: %.c
-	gcc -m32 -c $< -o $@ -nostdlib -I /usr/include/x86_64-linux-gnu
+	gcc -m32 -c $< -o $@ -nostdlib
 
 SRCS := $(shell find . -name "*.c" -or -name "*.s" -type f)
 endif
@@ -28,7 +28,7 @@ qemu-gdb: kernel.img
 	qemu-system-i386 -kernel kernel.img -m 128M -s -S -serial stdio
 
 clean:
-	rm -rf *.o *.img*
+	rm -rf *.o *.img* *.elf *.out
 
 initrd.img: create_initrd.cpp
 	g++ $? -o create_initrd.out

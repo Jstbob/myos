@@ -29,13 +29,21 @@ void init_mem_heap() {
 }
 
 void *krmalloc(uint32_t size) {
+    if (size == 0)
+        return 0;
     struct node *tmp;
-    // 寻找空闲且大小大于size的块
-    for (tmp = mem_heap; tmp->state && tmp->size < size; tmp = tmp->next) {
+
+    // 寻找空闲且足够空间的块
+    for (tmp = mem_heap;; tmp = tmp->next) {
         if (!tmp) {
             panic("krmalloc fail, not found enough memory.");
         }
+
+        if ((tmp->state == 0) && (tmp->size > size)) {
+            break;
+        }
     }
+
     uint32_t save = tmp->size - size - node_size;
     // 这里要注意剩余的空间不够存放Node header的情况
     if (save > 0) {
@@ -50,10 +58,10 @@ void *krmalloc(uint32_t size) {
             tmp->next->previous = rnode;
         rnode->previous = tmp;
         tmp->next = rnode;
-        return tmp->data;
+        return &tmp->data;
     } else { // 空间不够存放node header
         tmp->state = 1;
-        return tmp->data;
+        return &tmp->data;
     }
 }
 
@@ -65,7 +73,7 @@ void merge_free_node(struct node *lnode, struct node *rnode) {
     rnode->previous = lnode;
 };
 
-// 
+//
 // fix bug: free后没有还原previous, tmp->previous有错误
 void krfree(void *ptr) {
     struct node *tmp = (struct node *)((uint32_t)ptr - node_size);

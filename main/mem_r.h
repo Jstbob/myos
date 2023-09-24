@@ -8,10 +8,10 @@ extern unsigned char heap_start[];
 static uint32_t heap_size;
 
 struct [[gnu::packed]] node {
+    uint32_t size;
+    uint8_t state; // 0为空闲，1为占用
     struct node *previous;
     struct node *next;
-    uint8_t state; // 0为空闲，1为占用
-    uint32_t size;
     unsigned char data[];
 };
 

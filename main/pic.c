@@ -60,22 +60,39 @@ void PIC_remap(int offset1, int offset2) {
     outb(PIC2_DATA, a2);
 }
 
+void rmap_pic(){
+    outb(0x21,0xff);
+    outb(0xA1,0xff);
+
+    outb(0x20,0x11);
+    outb(0x21,0x20);
+    outb(0x21,1<<2);
+    outb(0x21,0x01);
+
+    outb(0xA0,0x11);
+    outb(0xA1,0x20);
+    outb(0xA1,1<<2);
+    outb(0xA1,0x01);
+
+    outb(0x21,0xfd);    // 屏蔽IRQ0、1此外的中断
+    outb(0xA1,0xff);
+}
+
 void init_pic() {
     _cli();
     // 将主、从分别映射到0x20、0x28，实际的中断号响应为32-47。
-    PIC_remap(0x20, 0x28);
-    init_timer(200);
+    // PIC_remap(0x20, 0x28);
+    rmap_pic();
+    // init_timer(200);
     _sti();
 }
 
 // 中断发生后，每次都需要重置PIC
 void handler_reset(uint32_t code) {
-    _cli();
     if (code >= 40) {
         outb(0xA0, 0x20);
     }
     outb(0x20, 0x20);
-    _sti();
 }
 
 void init_timer(uint32_t ticker) {

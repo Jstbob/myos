@@ -3,7 +3,7 @@
 # qemu支持直接引导multiboot1，不支持multiboot2
 # 这里使用multiboot1 spec的约定
 # spec还约定了机器的寄存器状态，重点要注意的是esp、gdtr此时还没有定义
-# 设置flags[0]，以得到内存大小信息
+# multiboot1设置flags[0]，以得到内存大小信息
 .set MAGIC, 0x1BADB002
 .set FLAGS, 1
 .set CHECKSUM, - (MAGIC + FLAGS)
@@ -26,7 +26,7 @@ boot:
     # 传给kmain引导信息
     pushl %ebx
     
-    # 设置gdt表
+    # 设置gdt表，完成gdt初始化
     lgdt gdtr   # debug，会在这里重置EIP
     # 使用段选择子初始化段寄存器
     mov $0x10, %ax
@@ -38,6 +38,7 @@ boot:
     mov %ax, %gs
     ljmp $0x08, $flush_cs
 
+    # 内存分页初始化
 flush_cs:
     # 设置分页，这里只做32MB内核内存的映射，每个目录可以映射1MB物理地址，使用8个目录即可
     movl $0, %eax

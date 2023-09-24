@@ -1,0 +1,4 @@
+support cmd:
+ls
+cat
+clear

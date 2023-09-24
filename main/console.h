@@ -32,5 +32,7 @@ void panic(char *msg);
 void push_anum(char a_num); // num必须为0-9
 void print_uint32(uint32_t num);
 void print_msg(char *msg);
+void print_uint8(uint8_t num);
+void backspace();
 
 #endif

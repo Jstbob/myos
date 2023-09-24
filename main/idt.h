@@ -33,6 +33,21 @@ struct [[gnu::packed]] idtr_t {
 
 void init_idt();
 
+#define KEYBOARD_BUFF_SIZE 256
+static char keyboard_buff[KEYBOARD_BUFF_SIZE];
+static char *cur_ptr = &keyboard_buff[0];
+static uint32_t start_process_flag = 0;
+
+void keyboard_write(char data);
+void open_keyboard();
+void close_keyboard();
+int parse_option(char *name, int *args, char ***argv);
+void keyboard_flush();
+
+void test_cmd();
+
+void intx80_handler(uint8_t code);
+
 // asm.S中的中断号响应函数
 extern void int0();
 extern void int1();

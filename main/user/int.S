@@ -1,0 +1,3 @@
+.section .text
+
+.global quit

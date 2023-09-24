@@ -262,6 +262,141 @@
 .global int255
 .global _cli
 .global _sti
+.global _read_sector
+.global _write_sector
+.global ata_read_one_sector
+.global ata_write_one_sector
+
+ata_read_one_sector:
+    push %ebp
+    mov %esp, %ebp
+    pusha
+
+    mov 12(%ebp), %ebx
+    mov $0x1F2, %edx
+    mov %cl, %al
+    outb %al, %dx
+
+    mov $0x1F3, %edx
+    mov %ebx, %eax
+    outb %al, %dx
+
+    mov $0x1F4, %edx
+    mov %ebx, %eax
+    shr $8, %eax
+    outb %al, %dx
+
+    mov $0x1F5, %edx
+    mov %ebx, %eax
+    shr $16, %eax
+    outb %al, %dx
+
+    mov $0x1F7, %edx
+    mov $0x20, %eax
+    outb %al, %dx
+
+going:
+    inb %dx, %al
+    test $8, %al
+    jz going
+
+    mov $256, %ecx
+    mov 8(%ebp), %edi
+    mov $0x1f0, %dx
+    rep insw
+    
+    popa
+    mov %ebp, %esp
+    pop %ebp
+    ret
+
+ata_write_one_sector:
+    push %ebp
+    mov %esp, %ebp
+    pusha
+
+    mov 12(%ebp), %ebx
+    mov $0x1F2, %edx
+    mov %cl, %al
+    outb %al, %dx
+
+    mov $0x1F3, %edx
+    mov %ebx, %eax
+    outb %al, %dx
+
+    mov $0x1F4, %edx
+    mov %ebx, %eax
+    shr $8, %eax
+    outb %al, %dx
+
+    mov $0x1F5, %edx
+    mov %ebx, %eax
+    shr $16, %eax
+    outb %al, %dx
+
+    mov $0x1F7, %edx
+    mov $0x30, %eax
+    outb %al, %dx
+
+w_going:
+    inb %dx, %al
+    test $8, %al
+    jz w_going
+
+    mov $256, %ecx
+    mov 8(%ebp), %edi
+    mov $0x1f0, %dx
+    mov %edi, %esi
+    rep outsw            
+    
+    popa
+    mov %ebp, %esp
+    pop %ebp
+    ret
+
+// 从硬盘读取到内存
+_read_sector:
+    push %ebp
+    mov %esp, %ebp
+    
+    pusha
+    
+    mov 12(%ebp), %eax
+    mov $256, %ecx
+    mul %ecx
+    mov %eax, %ecx
+
+    mov 8(%ebp), %edi
+    mov $0x1f0, %dx
+    rep insw
+    
+    popa
+    
+    mov %ebp, %esp
+    pop %ebp
+    ret
+
+// 从内存写入到硬盘
+_write_sector:
+    push %ebp
+    mov %esp, %ebp
+    
+    pusha
+    
+    mov 12(%ebp), %eax
+    mov $256, %ecx
+    mul %ecx
+    mov %eax, %ecx
+
+    mov 8(%ebp), %esi
+    mov $0x1f0, %dx
+    rep outsw
+    
+    popa
+    
+    mov %ebp, %esp
+    pop %ebp
+    ret
 
 _cli:
     cli
@@ -313,6 +448,14 @@ int_com_handler:
     popa
     sti
     iret
+
+.extern intx80_handler
+// int0x80做特殊处理
+int128:
+    cli
+    pusha
+    push $128
+    jmp int_com_handler
 
 // 中断vector向量函数
 int0:
@@ -1081,12 +1224,6 @@ int127:
     cli
     pusha
     push $127
-    jmp int_com_handler
-        
-int128:
-    cli
-    pusha
-    push $128
     jmp int_com_handler
         
 int129:

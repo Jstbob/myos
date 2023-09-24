@@ -2,6 +2,8 @@
 #include "asm.h"
 #include "boot.h"
 #include "console.h"
+#include "kbd.h"
+#include "mem_r.h"
 #include "pic.h"
 
 static struct idtr_t idtr [[gnu::aligned(32)]]
@@ -286,13 +288,14 @@ void init_idt() {
 // 32-47为PIC中断
 void int_error_handler(uint32_t code) {
     switch (code) {
-    
+
     // 32-47为PIC的中断号响应，PIC中断需要重置操作
-    // 32号为时钟中断，用来切换进程
+    // TODO: 32号为时钟中断，用来切换进程
     case 32:
         print_uint32(code);
         print_msg("\n");
     case 33:
+        keyboard_handler();
     case 34:
     case 35:
     case 36:
@@ -316,5 +319,138 @@ void int_error_handler(uint32_t code) {
         print_uint32(code);
         panic(", halt!");
         break;
+    }
+}
+
+void keyboard_handler() {
+    outb(0x61, 0x20);
+    uint8_t data = inb(0x60); // > 0x80 为释放按键
+    if (data < 0x80) {
+        keyboard_write((char)data);
+    }
+}
+
+void to_ascii(char *data) {
+    *data = normalmap[*data];
+}
+
+void keyboard_write(char data) {
+    to_ascii(&data);
+    switch (data) {
+    case 8:
+        --cur_ptr;
+        if (cur_ptr < &keyboard_buff[0]) {
+            cur_ptr = &keyboard_buff[0];
+        } else {
+            *cur_ptr = '\x00';
+            backspace();
+        }
+        break;
+
+    case '\n':
+        start_process_flag = 1;
+        push_char(data);
+        break;
+    default:
+        *cur_ptr = data;
+        push_char(data);
+        ++cur_ptr;
+        if (cur_ptr >= &keyboard_buff[0] + KEYBOARD_BUFF_SIZE) {
+            cur_ptr = &keyboard_buff[0];
+            print_msg("input cmd can't more than 256 bytes.\n");
+        }
+        break;
+    }
+}
+
+void keyboard_flush() {
+    do {
+        *cur_ptr = '\x00';
+        --cur_ptr;
+    } while (cur_ptr != &keyboard_buff[0]);
+    start_process_flag = 0;
+}
+
+void intx80_handler(uint8_t code) {
+}
+
+void open_keyboard() {
+    _sti();
+}
+
+void close_keyboard() {
+    _cli();
+}
+
+// TODO
+int parse_option(char *name, int *args, char ***argv) {
+    if (keyboard_buff[0] == '\x00') {
+        return -1;
+    }
+    int space_count = 0;
+    char *buff = &keyboard_buff[0];
+    for (; *buff != '\n'; ++buff) {
+        if (space_count == 0) {
+            for (int i = 0; *buff != '\x20'; ++i) {
+                name[i] = *buff;
+                ++buff;
+            }
+            *buff = '\x00';
+            ++space_count;
+            *argv = buff + 1;
+        } else {
+            if (*buff == '\x20') {
+                *buff = '\x00';
+                ++space_count;
+            }
+        }
+    }
+    *buff = '\x00';
+    *args = space_count;
+    return 0;
+}
+
+void test_cmd() {
+    while (1) {
+        print_msg("/#");
+        while (start_process_flag == 0) {
+        }
+        if (keyboard_buff[0] == '\x00' || keyboard_buff[0] == ' '
+            || keyboard_buff[0] == '\n') {
+            print_msg("input cmd is error.\n");
+            start_process_flag = 0;
+            continue;
+        }
+        close_keyboard();
+
+        char *args1;
+        int i = 0;
+        for (; i < 128; ++i) {
+            char ch = keyboard_buff[i];
+            if (ch == '\n' || ch == ' ' || ch == ' ') {
+                keyboard_buff[i] = '\x00';
+                break;
+            }
+        }
+        args1 = &keyboard_buff[++i];
+
+        if (str_cmp(&keyboard_buff[0], "ls")) {
+            ls_dir();
+        } else if (str_cmp(&keyboard_buff[0], "cat")) {
+            if (args1[0] == '\x00') {
+                print_msg("args parse error!\n");
+                goto exit;
+            }
+            cat(args1);
+        } else if (str_cmp(&keyboard_buff[0], "clear")) {
+            clear_screent();
+        } else {
+            print_msg("not found cmd!\n");
+            goto exit;
+        }
+
+    exit:
+        keyboard_flush();
+        open_keyboard();
     }
 }

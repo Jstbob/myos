@@ -7,7 +7,6 @@ static struct console video;
 void console_init() {
     video.video_temp = (uint16_t *)VIDEO_MEMORY_ADDR;
     clear_screent();
-    move_pos(0, 0);
 }
 
 void clear_screent() {
@@ -17,6 +16,7 @@ void clear_screent() {
             console_putchar(j, i, blank);
         }
     }
+    move_pos(0, 0);
 }
 
 void console_putchar(uint16_t x, uint16_t y, char chr) {
@@ -37,15 +37,16 @@ void move_pos(uint16_t x, uint16_t y) {
 
 void clear_line(uint16_t y) {
     uint16_t cur_position = y * WEIGHT;
+    char blank = ' ';
     for (uint16_t i = 0; i < WEIGHT; ++i) {
-        video.video_temp[cur_position + i] = ' ';
+        video.video_temp[cur_position + i] = (COLOR << 8) | blank;
     }
     move_pos(0, video.cur_pos_y);
 }
 
 void srcoll_line() {
     uint16_t cur_position = video.cur_pos_x + video.cur_pos_y * WEIGHT;
-    for (uint16_t i = WEIGHT; i < cur_position; ++i) {
+    for (uint16_t i = WEIGHT; i < WEIGHT * HIGHT; ++i) {
         video.video_temp[i - WEIGHT] = video.video_temp[i];
     }
     clear_line(video.cur_pos_y);
@@ -53,10 +54,10 @@ void srcoll_line() {
 
 void enter() {
     video.cur_pos_x = 0;
-    if (video.cur_pos_y == HIGHT) {
+    if (video.cur_pos_y >= HIGHT - 1) {
         srcoll_line();
     } else {
-        move_pos(video.cur_pos_x, video.cur_pos_y + 1);
+        move_pos(0, video.cur_pos_y + 1);
     }
 }
 
@@ -66,7 +67,7 @@ void push_char(char c) {
         enter();
         return;
     }
-    if (video.cur_pos_x == WEIGHT) {
+    if (video.cur_pos_x >= WEIGHT) {
         enter();
     }
     console_putchar(video.cur_pos_x, video.cur_pos_y, c);
@@ -118,4 +119,41 @@ void print_uint32(uint32_t num) {
             push_anum(tmp[i]);
         }
     }
+}
+
+void print_uint8(uint8_t num) {
+    // uint32_t最大有10位
+    uint8_t tmp[10];
+    for (uint8_t i = 0; i < 10; ++i) {
+        tmp[i] = 0;
+    }
+    uint8_t ff = num;
+    uint8_t rem;
+    uint8_t i = 0;
+
+    while (ff) {
+        ff = num / 10;
+        rem = num % 10;
+        tmp[i] = rem;
+        num = ff;
+        ++i;
+    }
+
+    if (i == 0) {
+        push_anum(tmp[i]);
+    } else {
+        while (i) {
+            --i;
+            push_anum(tmp[i]);
+        }
+    }
+}
+
+void backspace() {
+    if (video.cur_pos_x > 0) {
+        --video.cur_pos_x;
+    }
+    uint16_t cur_position = video.cur_pos_x + video.cur_pos_y * WEIGHT;
+    video.video_temp[cur_position] = (COLOR << 8) | '\x00';
+    move_pos(video.cur_pos_x, video.cur_pos_y);
 }

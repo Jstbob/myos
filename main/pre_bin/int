@@ -1,0 +1,6 @@
+#ifndef _INI_H_
+#define _INI_H_
+
+#define KERNEL_CALL 0x0000
+
+#endif

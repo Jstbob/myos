@@ -41,3 +41,6 @@ iso:
 
 qemu-iso:
 	qemu-system-i386 -cdrom ../myos.iso -m 128M
+
+iso:
+	qemu-system-i386 -cdrom ../myos.iso -m 128M -nographic

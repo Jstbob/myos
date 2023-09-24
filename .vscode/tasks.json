@@ -28,6 +28,15 @@
                 "cwd": "main",
             },
             "problemMatcher": []
+        },
+        {
+            "label": "fs-debug",
+            "type": "shell",
+            "command": "mingw32-make qemu-driver",
+            "options": {
+                "cwd": "main",
+            },
+            "problemMatcher": []
         }
     ]
 }

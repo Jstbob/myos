@@ -6,7 +6,7 @@ SECTIONS		# 设置扇区分布和合并规则
  
 	.text BLOCK(4K) : ALIGN(4K)
 	{
-		*(.multiboot2)
+		*(.multiboot)
 		*(.text)
 	}
 

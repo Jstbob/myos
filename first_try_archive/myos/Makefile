@@ -21,8 +21,9 @@ OBJS := $(SRCS:%=%.o)
 kernel.img: $(OBJS)
 	ld -m elf_i386 -T linker.ld -o $@ $?
 
+# 使用128M内存
 qemu: kernel.img
-	qemu-system-i386 -kernel kernel.img -m 128M		# 使用128M内存
+	qemu-system-i386 -kernel kernel.img -m 128M		
 
 qemu-gdb: kernel.img
 	qemu-system-i386 -kernel kernel.img -m 128M -s -S -serial stdio
@@ -30,6 +31,7 @@ qemu-gdb: kernel.img
 clean:
 	rm -rf *.o *.img* *.elf *.out
 
+# 创建initrd.img自定义的文件系统
 initrd.img: create_initrd.cpp
 	g++ $? -o create_initrd.out
 	./create_initrd.out

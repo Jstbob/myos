@@ -13,7 +13,7 @@ uint32_t *get_mbi(uint32_t *mbi_l, uint32_t des_type) {
         }
         ptr_tag += *(ptr_tag + 1);
     }
-    return NULL;
+    return 0;
 }
 
 void kernel_main(uint32_t *mbi_l) {

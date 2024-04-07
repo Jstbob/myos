@@ -7,7 +7,7 @@
     16-XX             tags            required
 */
 
-.section .multiboot
+.section .multiboot2
 .align 8
 
 # multiboot2 magic header

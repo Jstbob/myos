@@ -126,7 +126,7 @@ void ls_dir() {
 }
 
 // 得到链表上最后一个节点，方便增加文件
-void get_end_node() {
+struct fs_node *get_end_node() {
     struct fs_node *cur = &fs_header[1];
     for (; cur->next; cur = &fs_header[cur->next]) {
     }

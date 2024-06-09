@@ -13,8 +13,8 @@ uint32_t kernel_pd[PD_COUNT];
 uint32_t kernel_call[256];
 
 void init_call_func() {
-    kernel_call[0] = &ls_dir; // ls
-    kernel_call[1] = &cat;    // TODO, cat
+    kernel_call[0] = (uint32_t)&ls_dir; // ls
+    kernel_call[1] = (uint32_t)&cat;    // TODO, cat
 }
 
 // 进入kmain时，内存分页设置了4GB的空间

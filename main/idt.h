@@ -41,7 +41,7 @@ static uint32_t start_process_flag = 0;
 void keyboard_write(char data);
 void open_keyboard();
 void close_keyboard();
-int parse_option(char *name, int *args, char ***argv);
+int parse_option(char *name, int *args, char **argv);
 void keyboard_flush();
 
 void test_cmd();

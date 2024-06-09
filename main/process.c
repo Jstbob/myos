@@ -7,8 +7,8 @@
 #include "idt.h"
 #include "mem_r.h"
 
-extern kernel_pt[KERNEL_PAGE_ENTRIES];
-extern kernel_pd[PD_COUNT];
+extern uint32_t kernel_pt[KERNEL_PAGE_ENTRIES];
+extern uint32_t kernel_pd[PD_COUNT];
 
 // 有多少可以使用的内存页
 void init_available_mem(uint32_t mem_cap) {
@@ -52,7 +52,7 @@ main_t load_elf(char *name) {
     }
 
     file_first_block = krmalloc(BLOCK_SIZE);
-    ata_read_one_sector(file_first_block, node->nodes[0]);
+    ata_read_one_sector((uint32_t)file_first_block, node->nodes[0]);
     Elf32_Ehdr *elf_header = (Elf32_Ehdr *)file_first_block;
     Elf32_Phdr *elf_program_header
         = (Elf32_Phdr *)(file_first_block + sizeof(Elf32_Ehdr));
@@ -67,7 +67,7 @@ void create_process() {
     char name[128];
     int args;
     char **argv;
-    if (parse_option(&name, &args, &argv) != 0) {
+    if (parse_option(&name[0], &args, argv) != 0) {
         print_msg("parse option is fail.\n");
         goto exit;
     }

@@ -1,4 +1,4 @@
-CFLAGS := -m32 -nostdlib -g -w
+CFLAGS := -nostdlib -fno-pic -fno-pie -fno-plt -no-pie -fno-stack-protector -g -m32 -o2
 
 # Don't use ".s" file, can't inlcude define varible in ".s" file.
 SRCS := $(shell find . -maxdepth 1 -type f -name "*.c" -not -name "*user.c" -or -name "*.S" -not -name "crt.S" \

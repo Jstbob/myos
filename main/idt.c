@@ -5,6 +5,7 @@
 #include "kbd.h"
 #include "mem_r.h"
 #include "pic.h"
+#include "fs.h"
 
 static struct idtr_t idtr [[gnu::aligned(32)]]
 = { .limit = sizeof(idt) - 1, .base = &idt[0] };
@@ -284,6 +285,14 @@ void init_idt() {
     load_idt((uint32_t)&idtr);
 }
 
+void keyboard_handler() {
+    outb(0x61, 0x20);
+    uint8_t data = inb(0x60); // > 0x80 为释放按键
+    if (data < 0x80) {
+        keyboard_write((char)data);
+    }
+}
+
 // 根据不同的中断号，响应不同的例程
 // 32-47为PIC中断
 void int_error_handler(uint32_t code) {
@@ -319,14 +328,6 @@ void int_error_handler(uint32_t code) {
         print_uint32(code);
         panic(", halt!");
         break;
-    }
-}
-
-void keyboard_handler() {
-    outb(0x61, 0x20);
-    uint8_t data = inb(0x60); // > 0x80 为释放按键
-    if (data < 0x80) {
-        keyboard_write((char)data);
     }
 }
 
@@ -383,7 +384,7 @@ void close_keyboard() {
 }
 
 // TODO
-int parse_option(char *name, int *args, char ***argv) {
+int parse_option(char *name, int *args, char **argv) {
     if (keyboard_buff[0] == '\x00') {
         return -1;
     }
